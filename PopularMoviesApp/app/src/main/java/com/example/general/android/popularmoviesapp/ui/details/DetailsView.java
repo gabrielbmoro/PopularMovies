@@ -18,7 +18,7 @@ public class DetailsView extends AppCompatActivity {
     private TextView tvReleaseDate;
     private TextView tvTitle;
     private TextView tvUserRating;
-    private TextView tvOverview;
+    private me.grantland.widget.AutofitTextView tvOverview;
     /**
      * Movie choosed
      */
