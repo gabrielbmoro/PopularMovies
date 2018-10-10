@@ -1,10 +1,14 @@
 package com.example.general.android.popularmoviesapp.model;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+
+public class Movie implements Parcelable {
 
     private int voteCount;
     private long id;
-    private boolean hasVideo;
     private int voteAverage;
     private String title;
     private double popularity;
@@ -14,7 +18,6 @@ public class Movie {
     private String backdropPath;
     public static final String VOTE_COUNT_KEY = "vote_count";
     public static final String ID_KEY = "id";
-    public static final String VIDEO_KEY = "video";
     public static final String VOTE_AVERAGE_KEY = "vote_average";
     public static final String TITLE_KEY = "title";
     public static final String POPULARITY_KEY = "popularity";
@@ -22,6 +25,35 @@ public class Movie {
     public static final String OVERVIEW_KEY = "overview";
     public static final String RELEASE_DATE = "release_date";
     public static final String BACKDROP_PATH_KEY = "backdrop_path";
+
+    public Movie() { }
+
+    private Movie(Parcel in) {
+        voteCount = in.readInt();
+        id = in.readLong();
+        voteAverage = in.readInt();
+        popularity = in.readDouble();
+        ArrayList<String> array = in.createStringArrayList();
+        if(array.size() > 4) {
+            title = array.get(0);
+            posterPath = array.get(1);
+            overview = array.get(2);
+            releaseDate = array.get(3);
+            backdropPath = array.get(4);
+        }
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public int getVoteCount() {
         return voteCount;
@@ -37,14 +69,6 @@ public class Movie {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public boolean isHasVideo() {
-        return hasVideo;
-    }
-
-    public void setHasVideo(boolean hasVideo) {
-        this.hasVideo = hasVideo;
     }
 
     public int getVoteAverage() {
@@ -103,4 +127,23 @@ public class Movie {
         this.backdropPath = backdropPath;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(voteCount);
+        dest.writeLong(id);
+        dest.writeInt(voteAverage);
+        dest.writeDouble(popularity);
+        ArrayList<String> lst = new ArrayList<>();
+        lst.add(title);
+        lst.add(posterPath);
+        lst.add(overview);
+        lst.add(releaseDate);
+        lst.add(backdropPath);
+        dest.writeStringList(lst);
+    }
 }

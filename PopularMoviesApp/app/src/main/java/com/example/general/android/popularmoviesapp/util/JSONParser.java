@@ -1,6 +1,7 @@
 package com.example.general.android.popularmoviesapp.util;
 
 import com.example.general.android.popularmoviesapp.model.Movie;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +21,6 @@ public class JSONParser {
                 Movie movieToBeReturned = new Movie();
                 movieToBeReturned.setVoteCount(jsonObject.getInt(Movie.VOTE_COUNT_KEY));
                 movieToBeReturned.setId(jsonObject.getLong(Movie.ID_KEY));
-                movieToBeReturned.setHasVideo(jsonObject.getBoolean(Movie.VIDEO_KEY));
                 movieToBeReturned.setVoteAverage(jsonObject.getInt(Movie.VOTE_AVERAGE_KEY));
                 movieToBeReturned.setTitle(jsonObject.getString(Movie.TITLE_KEY));
                 movieToBeReturned.setPopularity(jsonObject.getDouble(Movie.POPULARITY_KEY));

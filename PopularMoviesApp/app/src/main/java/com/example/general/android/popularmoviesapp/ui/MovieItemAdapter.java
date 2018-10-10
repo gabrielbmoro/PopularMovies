@@ -1,6 +1,8 @@
 package com.example.general.android.popularmoviesapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,7 +34,8 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
 
     @Override
     public void onBindViewHolder(@NonNull MovieItemViewHolder movieItemViewHolder, int i) {
-        movieItemViewHolder.bind(context, lstMovies.get(i).getPosterPath().replaceAll("/", ""));
+        Movie movieTarget = lstMovies.get(i);
+        movieItemViewHolder.bind(context, movieTarget, movieTarget.getPosterPath().replaceAll("/", ""));
     }
 
     @Override
@@ -50,8 +53,18 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
             ibMoviePoster = itemView.findViewById(R.id.ibMoviePoster);
         }
 
-        void bind(Context context, String fileName) {
+        void bind(final Context context, final Movie movie, String fileName) {
             PicassoLoader.loadImageFromURL(context, IMAGE_SIZE, fileName, ibMoviePoster);
+            ibMoviePoster.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailsView.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(DetailsView.MOVIE_INTENT_KEY, movie);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
