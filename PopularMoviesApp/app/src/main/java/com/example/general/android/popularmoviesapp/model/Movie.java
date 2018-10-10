@@ -2,66 +2,73 @@ package com.example.general.android.popularmoviesapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.util.ArrayList;
 
+/**
+ * Parcelable implementation was based in:
+ * @link https://stackoverflow.com/questions/36071023/how-to-make-class-with-multiple-integers-and-strings-parcelable
+ */
 public class Movie implements Parcelable {
 
-    private int voteCount;
+    /**
+     * Movie properties
+     */
     private long id;
     private int voteAverage;
     private String title;
-    private double popularity;
     private String posterPath;
     private String overview;
     private String releaseDate;
-    private String backdropPath;
-    public static final String VOTE_COUNT_KEY = "vote_count";
+    /**
+     * These variables represent all keys used in json mapping for each movie property.
+     */
     public static final String ID_KEY = "id";
     public static final String VOTE_AVERAGE_KEY = "vote_average";
     public static final String TITLE_KEY = "title";
-    public static final String POPULARITY_KEY = "popularity";
     public static final String POSTER_PATH = "poster_path";
     public static final String OVERVIEW_KEY = "overview";
     public static final String RELEASE_DATE = "release_date";
-    public static final String BACKDROP_PATH_KEY = "backdrop_path";
 
     public Movie() { }
 
+    /**
+     * Constructor method used when the object is converted from parcel to object format.
+     * @param in defines the parcel object.
+     */
     private Movie(Parcel in) {
-        voteCount = in.readInt();
         id = in.readLong();
         voteAverage = in.readInt();
-        popularity = in.readDouble();
         ArrayList<String> array = in.createStringArrayList();
-        if(array.size() > 4) {
+        if (array != null && array.size() > 3) {
             title = array.get(0);
             posterPath = array.get(1);
             overview = array.get(2);
             releaseDate = array.get(3);
-            backdropPath = array.get(4);
         }
     }
 
+    /**
+     * This method is used by parcel implementation.
+     */
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        /**
+         * Call the constructor to convert parcel to object.
+         * @param in defines some parcel object
+         * @return a movie object
+         */
         @Override
         public Movie createFromParcel(Parcel in) {
             return new Movie(in);
         }
 
+        /**
+         * I don't why this method is used.
+         */
         @Override
         public Movie[] newArray(int size) {
             return new Movie[size];
         }
     };
-
-    public int getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
 
     public long getId() {
         return id;
@@ -85,14 +92,6 @@ public class Movie implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
     }
 
     public String getPosterPath() {
@@ -119,31 +118,28 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    public String getBackdropPath() {
-        return backdropPath;
-    }
-
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-    }
-
+    /**
+     * I don't why this method is used.
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * The parcel object is created using the movie properties
+     * @param dest parcel object that will be generated
+     * @param flags don't know why this parameter is
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(voteCount);
         dest.writeLong(id);
         dest.writeInt(voteAverage);
-        dest.writeDouble(popularity);
         ArrayList<String> lst = new ArrayList<>();
         lst.add(title);
         lst.add(posterPath);
         lst.add(overview);
         lst.add(releaseDate);
-        lst.add(backdropPath);
         dest.writeStringList(lst);
     }
 }

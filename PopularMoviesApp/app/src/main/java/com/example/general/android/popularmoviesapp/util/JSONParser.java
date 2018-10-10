@@ -7,6 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
+/**
+ * This class convert the json string in a movies list
+ */
 public class JSONParser {
 
     public static ArrayList<Movie> gettingResultsValues(String astrJsonText) {
@@ -19,11 +22,9 @@ public class JSONParser {
             for (int count = 0; count < jsonObjects.length(); count++) {
                 jsonObject = jsonObjects.getJSONObject(count);
                 Movie movieToBeReturned = new Movie();
-                movieToBeReturned.setVoteCount(jsonObject.getInt(Movie.VOTE_COUNT_KEY));
                 movieToBeReturned.setId(jsonObject.getLong(Movie.ID_KEY));
                 movieToBeReturned.setVoteAverage(jsonObject.getInt(Movie.VOTE_AVERAGE_KEY));
                 movieToBeReturned.setTitle(jsonObject.getString(Movie.TITLE_KEY));
-                movieToBeReturned.setPopularity(jsonObject.getDouble(Movie.POPULARITY_KEY));
                 movieToBeReturned.setPosterPath(jsonObject.getString(Movie.POSTER_PATH));
                 movieToBeReturned.setOverview(jsonObject.getString(Movie.OVERVIEW_KEY));
                 movieToBeReturned.setReleaseDate(jsonObject.getString(Movie.RELEASE_DATE));

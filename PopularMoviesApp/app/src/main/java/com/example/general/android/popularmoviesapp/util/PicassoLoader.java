@@ -5,6 +5,9 @@ import android.util.Log;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
+/**
+ * This class loads the image from url
+ */
 public class PicassoLoader {
 
     private static final String BASE_URL = "http://image.tmdb.org/t/p";

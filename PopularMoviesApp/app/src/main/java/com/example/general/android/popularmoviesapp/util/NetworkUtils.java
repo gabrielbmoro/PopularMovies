@@ -2,7 +2,6 @@ package com.example.general.android.popularmoviesapp.util;
 
 import android.net.Uri;
 import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -10,8 +9,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * This class connects with api service.
+ */
 public class NetworkUtils {
 
+    /**
+     * Base url
+     */
     private static final String MOVIEAPI_URL = "https://api.themoviedb.org/3/movie/";
     private static final String API_KEY_PARAM = "api_key";
 

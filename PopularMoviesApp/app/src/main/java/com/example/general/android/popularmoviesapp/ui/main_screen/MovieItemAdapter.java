@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui;
+package com.example.general.android.popularmoviesapp.ui.main_screen;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
+import com.example.general.android.popularmoviesapp.ui.details.DetailsView;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 import java.util.ArrayList;
 
@@ -55,6 +56,9 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
 
         void bind(final Context context, final Movie movie, String fileName) {
             PicassoLoader.loadImageFromURL(context, IMAGE_SIZE, fileName, ibMoviePoster);
+            /**
+             * This event call the details screen.
+             */
             ibMoviePoster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
