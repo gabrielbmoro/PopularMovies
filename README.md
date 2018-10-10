@@ -1,5 +1,9 @@
 # Popular Movies - Udacity Course
 
+- To this project it is necessary to put the api key in strings.xml, for example:
+
+> \<string name="api_key"\>your key\<\/string\>
+
 ### Stage 1 - Implementation
 
 - Instructions to the User
