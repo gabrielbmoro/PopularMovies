@@ -1,7 +1,6 @@
 package com.example.general.android.popularmoviesapp.util;
 
 import android.net.Uri;
-import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -39,8 +38,6 @@ public class NetworkUtils {
 
     public static String getResponseFromHttpURL(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-        Log.d("TESTT", urlConnection.toString());
 
         try {
             InputStream in = urlConnection.getInputStream();

@@ -44,6 +44,12 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
         return lstMovies.size();
     }
 
+    public void updateMovies(ArrayList<Movie> movies) {
+        this.lstMovies.clear();
+        this.lstMovies.addAll(movies);
+        notifyDataSetChanged();
+    }
+
     class MovieItemViewHolder extends RecyclerView.ViewHolder {
 
         protected ImageButton ibMoviePoster;
