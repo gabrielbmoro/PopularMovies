@@ -6,4 +6,5 @@
     <color name="cardColor">#029688</color>
     <color name="colorWhite">#FFFF</color>
     <color name="gray">#817f7f</color>
+    <color name="favoriteButton">#85E6DD</color>
 </resources>

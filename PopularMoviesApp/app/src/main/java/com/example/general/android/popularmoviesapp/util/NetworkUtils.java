@@ -19,6 +19,40 @@ public class NetworkUtils {
     private static final String MOVIEAPI_URL = "https://api.themoviedb.org/3/movie/";
     private static final String API_KEY_PARAM = "api_key";
 
+    public static URL buildURLToFetchTrailers(String a_strApiKey, Long movieId) {
+        String urlFormatted = MOVIEAPI_URL + movieId.toString() + "/videos";
+        Uri builtUri = Uri.parse(urlFormatted)
+                .buildUpon()
+                .appendQueryParameter(API_KEY_PARAM, a_strApiKey)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch(MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public static URL buildURLToFetchReviews(String a_strApiKey, String movieId) {
+        String urlFormatted = MOVIEAPI_URL + movieId + "/reviews";
+        Uri builtUri = Uri.parse(urlFormatted)
+                .buildUpon()
+                .appendQueryParameter(API_KEY_PARAM, a_strApiKey)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch(MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
     public static URL buildURLToAccessMovies(String a_strApiKey, String strSortedBy) {
         String urlFormatted = MOVIEAPI_URL + strSortedBy;
         Uri builtUri = Uri.parse(urlFormatted)

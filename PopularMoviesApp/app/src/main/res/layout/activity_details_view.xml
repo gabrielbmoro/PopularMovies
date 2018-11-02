@@ -74,10 +74,29 @@
         style="@style/Base.TextAppearance.AppCompat.Body2"
         android:textAlignment="gravity"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/scOverView"
+        app:layout_constraintBottom_toTopOf="@+id/btnMarkAsFavorite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/gdVerticalLine"
         app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
+
+
+    <Button
+        android:id="@+id/btnMarkAsFavorite"
+        android:background="@color/favoriteButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/markAsFavorite"
+        app:layout_constraintBottom_toTopOf="@+id/scOverView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gdVerticalLine"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserRating" />
+
 
     <android.support.constraint.Guideline
         android:id="@+id/gdVerticalLine"
@@ -164,7 +183,7 @@
         app:layout_constraintBottom_toTopOf="@+id/gdHorizontalLine2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/gdVerticalLine"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserRating"
+        app:layout_constraintTop_toBottomOf="@+id/btnMarkAsFavorite"
         xmlns:autofit="http://schemas.android.com/apk/res-auto">
 
     <me.grantland.widget.AutofitTextView
