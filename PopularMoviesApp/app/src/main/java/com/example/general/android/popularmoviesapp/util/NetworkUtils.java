@@ -36,7 +36,7 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildURLToFetchReviews(String a_strApiKey, String movieId) {
+    public static URL buildURLToFetchReviews(String a_strApiKey, long movieId) {
         String urlFormatted = MOVIEAPI_URL + movieId + "/reviews";
         Uri builtUri = Uri.parse(urlFormatted)
                 .buildUpon()

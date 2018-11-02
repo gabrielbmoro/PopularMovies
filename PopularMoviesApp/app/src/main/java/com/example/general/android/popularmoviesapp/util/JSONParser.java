@@ -1,6 +1,7 @@
 package com.example.general.android.popularmoviesapp.util;
 
 import com.example.general.android.popularmoviesapp.model.Movie;
+import com.example.general.android.popularmoviesapp.model.Review;
 import com.example.general.android.popularmoviesapp.model.VideoTrailer;
 
 import org.json.JSONArray;
@@ -64,5 +65,29 @@ public class JSONParser {
             }
         }
         return videosLst;
+    }
+
+    public static ArrayList<Review> gettingReviewResultsValues(String astrJsonText) {
+        JSONObject results = null;
+        ArrayList<Review> reviewLst = new ArrayList<>();
+        if (astrJsonText != null) {
+            try {
+                results = new JSONObject(astrJsonText);
+                JSONArray jsonObjects = results.getJSONArray("results");
+                JSONObject jsonObject = null;
+                for (int count = 0; count < jsonObjects.length(); count++) {
+                    jsonObject = jsonObjects.getJSONObject(count);
+                    Review reviewToBeReturned = new Review();
+                    reviewToBeReturned.setAuthor(jsonObject.getString(Review.AUTHOR_KEY));
+                    reviewToBeReturned.setContent(jsonObject.getString(Review.CONTENT_KEY));
+                    reviewToBeReturned.setId(jsonObject.getString(Review.ID_KEY));
+                    reviewToBeReturned.setUrl(jsonObject.getString(Review.URL_KEY));
+                    reviewLst.add(reviewToBeReturned);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return reviewLst;
     }
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
+import com.example.general.android.popularmoviesapp.model.Review;
 import com.example.general.android.popularmoviesapp.model.VideoTrailer;
 import com.example.general.android.popularmoviesapp.util.MathService;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
@@ -28,6 +29,8 @@ public class DetailsView extends AppCompatActivity {
     private TextView tvUserRating;
     private me.grantland.widget.AutofitTextView tvOverview;
     private RecyclerView rvTrailers;
+    private RecyclerView rvReviews;
+
     /**
      * Movie choosed
      */
@@ -52,6 +55,7 @@ public class DetailsView extends AppCompatActivity {
         tvUserRating = findViewById(R.id.tvUserRating);
         tvOverview = findViewById(R.id.tvOverview);
         rvTrailers = findViewById(R.id.rvTrailers);
+        rvReviews = findViewById(R.id.rvReviews);
 
         /**
          * Getting the movie from parcelable extras
@@ -68,6 +72,7 @@ public class DetailsView extends AppCompatActivity {
         super.onResume();
         loadInfo();
         loadTrailers();
+        loadReviews();
     }
 
     private void loadTrailers() {
@@ -80,6 +85,18 @@ public class DetailsView extends AppCompatActivity {
                 rvTrailers.setAdapter(new VideoTrailerAdapter(results));
             }
         }).execute(NetworkUtils.buildURLToFetchTrailers(getString(R.string.api_key), movie.getId()));
+    }
+
+    private void loadReviews() {
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rvReviews.setLayoutManager(llm);
+
+        new ReviewsApiQueryTask(new ReviewsApiQueryTask.UpdateRecyclerView() {
+            @Override
+            public void onUpdate(ArrayList<Review> results) {
+                rvReviews.setAdapter(new ReviewAdapter((results)));
+            }
+        }).execute(NetworkUtils.buildURLToFetchReviews(getString(R.string.api_key), movie.getId()));
     }
 
     /**

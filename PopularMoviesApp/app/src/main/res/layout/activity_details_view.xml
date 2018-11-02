@@ -24,6 +24,7 @@
 
     <TextView
         android:id="@+id/tvReleaseDate"
+        style="@style/Base.TextAppearance.AppCompat.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -32,13 +33,12 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:gravity="start"
-        tools:text="2015"
-        style="@style/Base.TextAppearance.AppCompat.Title"
         app:layout_constraintBottom_toTopOf="@+id/tvUserRating"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/gdVerticalLine"
         app:layout_constraintTop_toTopOf="@+id/ivPoster"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        tools:text="2015" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -61,6 +61,7 @@
 
     <TextView
         android:id="@+id/tvUserRating"
+        style="@style/Base.TextAppearance.AppCompat.Body2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -70,19 +71,17 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:gravity="start"
-        tools:text="8.1/10"
-        style="@style/Base.TextAppearance.AppCompat.Body2"
         android:textAlignment="gravity"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btnMarkAsFavorite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/gdVerticalLine"
-        app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
+        app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate"
+        tools:text="8.1/10" />
 
 
     <Button
         android:id="@+id/btnMarkAsFavorite"
-        android:background="@color/favoriteButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -91,6 +90,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
+        android:background="@color/favoriteButton"
         android:text="@string/markAsFavorite"
         app:layout_constraintBottom_toTopOf="@+id/scOverView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,16 +102,16 @@
         android:id="@+id/gdVerticalLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.65"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
 
 
     <android.support.constraint.Guideline
         android:id="@+id/gdHorizontalLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.15"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
 
     <android.support.constraint.Guideline
         android:id="@+id/gdHorizontalLine2"
@@ -131,46 +131,71 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:background="@color/gray"
-        app:layout_constraintBottom_toTopOf="@+id/tvTrailersLabel"
+        app:layout_constraintBottom_toTopOf="@+id/svDetailsAboutMovie"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/gdHorizontalLine2"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
-    <TextView
-        android:id="@+id/tvTrailersLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+
+    <ScrollView
+        android:id="@+id/svDetailsAboutMovie"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="2dp"
-        android:text="@string/trailers"
-        style="@style/Base.TextAppearance.AppCompat.Title"
-        app:layout_constraintBottom_toTopOf="@+id/rvTrailers"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vwSeparator" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvTrailers"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        tools:listitem="@layout/trailer_item"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="2dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTrailersLabel" />
+        app:layout_constraintTop_toBottomOf="@id/gdHorizontalLine2">
 
-    <ScrollView
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTrailersLabel"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:text="@string/trailers" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvTrailers"
+                android:nestedScrollingEnabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/trailer_item" />
+
+
+            <TextView
+                android:id="@+id/tvReviewsLabel"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:text="@string/reviews" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvReviews"
+                android:nestedScrollingEnabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/review_item" />
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+    <ScrollView xmlns:autofit="http://schemas.android.com/apk/res-auto"
         android:id="@+id/scOverView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -183,17 +208,16 @@
         app:layout_constraintBottom_toTopOf="@+id/gdHorizontalLine2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/gdVerticalLine"
-        app:layout_constraintTop_toBottomOf="@+id/btnMarkAsFavorite"
-        xmlns:autofit="http://schemas.android.com/apk/res-auto">
+        app:layout_constraintTop_toBottomOf="@+id/btnMarkAsFavorite">
 
-    <me.grantland.widget.AutofitTextView
-        android:id="@+id/tvOverview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        autofit:minTextSize="10sp"
-        style="@style/Base.TextAppearance.AppCompat.Subhead"
-        tools:text="@string/texttestsinopse"/>
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/tvOverview"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            autofit:minTextSize="10sp"
+            tools:text="@string/texttestsinopse" />
 
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
