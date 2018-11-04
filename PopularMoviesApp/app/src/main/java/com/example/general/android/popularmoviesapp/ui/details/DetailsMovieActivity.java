@@ -2,6 +2,7 @@ package com.example.general.android.popularmoviesapp.ui.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.DataBindingUtil;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,9 +11,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.general.android.popularmoviesapp.R;
+import com.example.general.android.popularmoviesapp.databinding.ActivityDetailsViewBinding;
 import com.example.general.android.popularmoviesapp.model.Movie;
 import com.example.general.android.popularmoviesapp.model.Review;
 import com.example.general.android.popularmoviesapp.model.VideoTrailer;
@@ -20,7 +23,6 @@ import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewAda
 import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewsApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.trailers.TrailerApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.trailers.VideoTrailerAdapter;
-import com.example.general.android.popularmoviesapp.util.MathService;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 
 import java.util.ArrayList;
@@ -31,12 +33,11 @@ import java.util.ArrayList;
 public class DetailsMovieActivity extends AppCompatActivity {
 
     private ImageView ivPoster;
-    private TextView tvReleaseDate;
-    private TextView tvTitle;
-    private TextView tvUserRating;
-    private me.grantland.widget.AutofitTextView tvOverview;
     private RecyclerView rvTrailers;
     private RecyclerView rvReviews;
+    private TextView tvTrailersLabel;
+    private TextView tvReviewsLabel;
+    private ScrollView svDetailsAboutMovie;
     private DetailsViewModel viewModel;
     /**
      * Tasks
@@ -56,15 +57,14 @@ public class DetailsMovieActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details_view);
+        ActivityDetailsViewBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_details_view);
 
         ivPoster = findViewById(R.id.ivPoster);
-        tvReleaseDate = findViewById(R.id.tvReleaseDate);
-        tvTitle = findViewById(R.id.tvTitle);
-        tvUserRating = findViewById(R.id.tvUserRating);
-        tvOverview = findViewById(R.id.tvOverview);
         rvTrailers = findViewById(R.id.rvTrailers);
         rvReviews = findViewById(R.id.rvReviews);
+        tvTrailersLabel = findViewById(R.id.tvTrailersLabel);
+        tvReviewsLabel = findViewById(R.id.tvReviewsLabel);
+        svDetailsAboutMovie = findViewById(R.id.svDetailsAboutMovie);
 
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
 
@@ -78,7 +78,7 @@ public class DetailsMovieActivity extends AppCompatActivity {
         if (!(objectViaIntent instanceof Movie)) finish();
 
         viewModel.setMovie((Movie) objectViaIntent);
-
+        binding.setViewModel(viewModel);
         initReviewsObserver();
         initTrailersObserver();
     }
@@ -142,20 +142,34 @@ public class DetailsMovieActivity extends AppCompatActivity {
     private void dispareTasks() {
         Movie movieTarget = viewModel.getMovie().getValue();
         if (movieTarget != null) {
-            requestForReviews = new ReviewsApiQueryTask(getString(R.string.api_key), movieTarget.getId(), new ReviewsApiQueryTask.UpdateRecyclerView() {
-                @Override
-                public void onUpdate(ArrayList<Review> results) {
-                    viewModel.setReviews(results);
-                }
-            });
             requestForTrailers = new TrailerApiQueryTask(getString(R.string.api_key), movieTarget.getId(), new TrailerApiQueryTask.UpdateRecyclerView() {
                 @Override
                 public void onUpdate(ArrayList<VideoTrailer> results) {
                     viewModel.setTrailerLst(results);
+                    if (results == null || results.isEmpty()) {
+                        tvTrailersLabel.setVisibility(TextView.GONE);
+                        rvTrailers.setVisibility(RecyclerView.GONE);
+                    } else {
+                        tvTrailersLabel.setVisibility(TextView.VISIBLE);
+                        rvTrailers.setVisibility(RecyclerView.VISIBLE);
+                    }
+                    requestForReviews.execute();
                 }
             });
-
-            requestForReviews.execute();
+            requestForReviews = new ReviewsApiQueryTask(getString(R.string.api_key), movieTarget.getId(), new ReviewsApiQueryTask.UpdateRecyclerView() {
+                @Override
+                public void onUpdate(ArrayList<Review> results) {
+                    viewModel.setReviews(results);
+                    if (results == null || results.isEmpty()) {
+                        tvReviewsLabel.setVisibility(TextView.GONE);
+                        rvReviews.setVisibility(RecyclerView.GONE);
+                    } else {
+                        tvReviewsLabel.setVisibility(TextView.VISIBLE);
+                        rvReviews.setVisibility(RecyclerView.VISIBLE);
+                    }
+                    svDetailsAboutMovie.scrollTo(0, 0);
+                }
+            });
             requestForTrailers.execute();
         }
     }
@@ -166,12 +180,8 @@ public class DetailsMovieActivity extends AppCompatActivity {
     private void loadInfo() {
         Movie movieTarget = viewModel.getMovie().getValue();
         if (movieTarget != null) {
-            tvTitle.setText(movieTarget.getTitle());
-            tvReleaseDate.setText(MathService.getYearFromDate(movieTarget.getReleaseDate()));
-            String userRatingFormatted = movieTarget.getVoteAverage() + "/10";
-            tvUserRating.setText(userRatingFormatted);
-            tvOverview.setText(movieTarget.getOverview());
             PicassoLoader.loadImageFromURL(this, IMAGE_SIZE, movieTarget.getPosterPath().replaceAll("/", ""), ivPoster);
         }
     }
 }
+

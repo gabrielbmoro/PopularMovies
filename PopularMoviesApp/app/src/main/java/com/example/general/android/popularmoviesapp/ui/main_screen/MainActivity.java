@@ -2,6 +2,7 @@ package com.example.general.android.popularmoviesapp.ui.main_screen;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.example.general.android.popularmoviesapp.R;
+import com.example.general.android.popularmoviesapp.databinding.ActivityMainDiscoveryScreenBinding;
 import com.example.general.android.popularmoviesapp.model.Movie;
 
 import java.util.ArrayList;
@@ -37,12 +39,18 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActivityMainDiscoveryScreenBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main_discovery_screen);
+
         setContentView(R.layout.activity_main_discovery_screen);
+
 
         rcRecyclerView = findViewById(R.id.rvMovies);
         spCriteria = findViewById(R.id.spCriteria);
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        binding.setViewModel(viewModel);
 
         setupRecyclerView();
 

@@ -2,10 +2,12 @@ package com.example.general.android.popularmoviesapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Parcelable implementation was based in:
+ *
  * @link https://stackoverflow.com/questions/36071023/how-to-make-class-with-multiple-integers-and-strings-parcelable
  */
 public class Movie implements Parcelable {
@@ -29,10 +31,18 @@ public class Movie implements Parcelable {
     public static final String OVERVIEW_KEY = "overview";
     public static final String RELEASE_DATE = "release_date";
 
-    public Movie() { }
+    public Movie() {
+        id = 0;
+        voteAverage = 0;
+        title = "";
+        posterPath = "";
+        overview = "";
+        releaseDate = "";
+    }
 
     /**
      * Constructor method used when the object is converted from parcel to object format.
+     *
      * @param in defines the parcel object.
      */
     private Movie(Parcel in) {
@@ -128,7 +138,8 @@ public class Movie implements Parcelable {
 
     /**
      * The parcel object is created using the movie properties
-     * @param dest parcel object that will be generated
+     *
+     * @param dest  parcel object that will be generated
      * @param flags don't know why this parameter is
      */
     @Override

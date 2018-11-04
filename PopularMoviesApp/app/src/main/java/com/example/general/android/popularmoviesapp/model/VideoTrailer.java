@@ -6,11 +6,8 @@ public class VideoTrailer {
      * Video properties
      */
     private String id;
-    private String iso6391Format;
-    private String iso31661Format;
     private String key;
     private String name;
-    private String site;
     private int size;
     private String type;
     /**
@@ -26,28 +23,20 @@ public class VideoTrailer {
     public static final String TYPE_KEY = "type";
 
 
+    public VideoTrailer() {
+        id = "";
+        key = "";
+        name = "";
+        size = 0;
+        type = "";
+    }
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getIso6391Format() {
-        return iso6391Format;
-    }
-
-    public void setIso6391Format(String iso6391Format) {
-        this.iso6391Format = iso6391Format;
-    }
-
-    public String getIso31661Format() {
-        return iso31661Format;
-    }
-
-    public void setIso31661Format(String iso31661Format) {
-        this.iso31661Format = iso31661Format;
     }
 
     public String getKey() {
@@ -64,14 +53,6 @@ public class VideoTrailer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSite() {
-        return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
     }
 
     public int getSize() {

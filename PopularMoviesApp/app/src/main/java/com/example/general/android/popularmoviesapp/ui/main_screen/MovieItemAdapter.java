@@ -53,7 +53,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
     class MovieItemViewHolder extends RecyclerView.ViewHolder {
 
         protected ImageButton ibMoviePoster;
-        static final String IMAGE_SIZE = "w342";
+        static final String IMAGE_SIZE = "w500";
 
         MovieItemViewHolder(@NonNull View itemView) {
             super(itemView);

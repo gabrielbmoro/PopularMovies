@@ -13,6 +13,13 @@ public class Review {
     public static final String URL_KEY = "url";
 
 
+    public Review() {
+        author = "";
+        content = "";
+        id = "";
+        url = "";
+    }
+
     /**
      * Review's properties
      */
