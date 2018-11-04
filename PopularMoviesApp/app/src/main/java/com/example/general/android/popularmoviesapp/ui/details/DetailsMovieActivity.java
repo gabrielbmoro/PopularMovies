@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +11,10 @@ import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
 import com.example.general.android.popularmoviesapp.model.Review;
 import com.example.general.android.popularmoviesapp.model.VideoTrailer;
+import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewAdapter;
+import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewsApiQueryTask;
+import com.example.general.android.popularmoviesapp.ui.details.trailers.TrailerApiQueryTask;
+import com.example.general.android.popularmoviesapp.ui.details.trailers.VideoTrailerAdapter;
 import com.example.general.android.popularmoviesapp.util.MathService;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
@@ -21,7 +24,7 @@ import java.util.ArrayList;
 /**
  * This screen show to the user the detail about movie.
  */
-public class DetailsView extends AppCompatActivity {
+public class DetailsMovieActivity extends AppCompatActivity {
 
     private ImageView ivPoster;
     private TextView tvReleaseDate;
@@ -30,6 +33,11 @@ public class DetailsView extends AppCompatActivity {
     private me.grantland.widget.AutofitTextView tvOverview;
     private RecyclerView rvTrailers;
     private RecyclerView rvReviews;
+    /**
+     * Tasks
+     */
+    private TrailerApiQueryTask requestForTrailers;
+    private ReviewsApiQueryTask requestForReviews;
 
     /**
      * Movie choosed
@@ -75,28 +83,49 @@ public class DetailsView extends AppCompatActivity {
         loadReviews();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (requestForTrailers != null) {
+            requestForTrailers.cancel(true);
+        }
+        if (requestForReviews != null) {
+            requestForReviews.cancel(true);
+        }
+    }
+
     private void loadTrailers() {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvTrailers.setLayoutManager(llm);
 
-        new TrailerApiQueryTask(new TrailerApiQueryTask.UpdateRecyclerView() {
+        if (requestForTrailers != null) {
+            requestForTrailers.cancel(true);
+            requestForTrailers = null;
+        }
+        requestForTrailers = new TrailerApiQueryTask(new TrailerApiQueryTask.UpdateRecyclerView() {
             @Override
             public void onUpdate(ArrayList<VideoTrailer> results) {
                 rvTrailers.setAdapter(new VideoTrailerAdapter(results));
             }
-        }).execute(NetworkUtils.buildURLToFetchTrailers(getString(R.string.api_key), movie.getId()));
+        });
+        requestForTrailers.execute(NetworkUtils.buildURLToFetchTrailers(getString(R.string.api_key), movie.getId()));
     }
 
     private void loadReviews() {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvReviews.setLayoutManager(llm);
 
-        new ReviewsApiQueryTask(new ReviewsApiQueryTask.UpdateRecyclerView() {
+        if (requestForReviews != null) {
+            requestForReviews.cancel(true);
+            requestForReviews = null;
+        }
+        requestForReviews = new ReviewsApiQueryTask(new ReviewsApiQueryTask.UpdateRecyclerView() {
             @Override
             public void onUpdate(ArrayList<Review> results) {
                 rvReviews.setAdapter(new ReviewAdapter((results)));
             }
-        }).execute(NetworkUtils.buildURLToFetchReviews(getString(R.string.api_key), movie.getId()));
+        });
+        requestForReviews.execute(NetworkUtils.buildURLToFetchReviews(getString(R.string.api_key), movie.getId()));
     }
 
     /**

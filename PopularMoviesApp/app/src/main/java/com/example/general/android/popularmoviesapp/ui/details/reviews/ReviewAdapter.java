@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui.details;
+package com.example.general.android.popularmoviesapp.ui.details.reviews;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -18,7 +18,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     private ArrayList<Review> lstReviews;
     private Context context;
 
-    ReviewAdapter(ArrayList<Review> alstReviewList) {
+    public ReviewAdapter(ArrayList<Review> alstReviewList) {
         lstReviews = alstReviewList;
     }
 

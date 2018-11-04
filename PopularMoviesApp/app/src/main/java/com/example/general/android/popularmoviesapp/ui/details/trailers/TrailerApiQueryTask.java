@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui.details;
+package com.example.general.android.popularmoviesapp.ui.details.trailers;
 
 import android.os.AsyncTask;
 
@@ -14,7 +14,7 @@ public class TrailerApiQueryTask extends AsyncTask<URL, Void, ArrayList<VideoTra
 
     private UpdateRecyclerView contract;
 
-    TrailerApiQueryTask(UpdateRecyclerView acontract) {
+    public TrailerApiQueryTask(UpdateRecyclerView acontract) {
         contract = acontract;
     }
 
@@ -42,7 +42,7 @@ public class TrailerApiQueryTask extends AsyncTask<URL, Void, ArrayList<VideoTra
         }
     }
 
-    interface UpdateRecyclerView {
+    public interface UpdateRecyclerView {
         void onUpdate(ArrayList<VideoTrailer> results);
     }
 }

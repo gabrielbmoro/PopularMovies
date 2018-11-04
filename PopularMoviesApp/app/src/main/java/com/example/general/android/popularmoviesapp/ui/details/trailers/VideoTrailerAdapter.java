@@ -1,6 +1,5 @@
-package com.example.general.android.popularmoviesapp.ui.details;
+package com.example.general.android.popularmoviesapp.ui.details.trailers;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,7 +22,7 @@ public class VideoTrailerAdapter extends RecyclerView.Adapter<VideoTrailerAdapte
     private ArrayList<VideoTrailer> lstTrailers;
     private Context context;
 
-    VideoTrailerAdapter(ArrayList<VideoTrailer> alstMoviesList) {
+    public VideoTrailerAdapter(ArrayList<VideoTrailer> alstMoviesList) {
         lstTrailers = alstMoviesList;
     }
 

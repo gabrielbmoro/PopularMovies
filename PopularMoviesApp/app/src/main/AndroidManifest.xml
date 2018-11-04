@@ -12,18 +12,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="android:theme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.main_screen.MainDiscoveryScreen">
+        <activity android:name=".ui.main_screen.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.details.DetailsView"
-            android:parentActivityName=".ui.main_screen.MainDiscoveryScreen">
+        <activity android:name=".ui.details.DetailsMovieActivity"
+            android:parentActivityName=".ui.main_screen.MainActivity"
+            tools:targetApi="jelly_bean">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main_screen.MainDiscoveryScreen" />
+                android:value=".ui.main_screen.MainActivity" />
         </activity>
     </application>
 

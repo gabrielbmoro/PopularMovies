@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
-import com.example.general.android.popularmoviesapp.ui.details.DetailsView;
+import com.example.general.android.popularmoviesapp.ui.details.DetailsMovieActivity;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
     private ArrayList<Movie> lstMovies;
     private Context context;
 
-    MovieItemAdapter(ArrayList<Movie> alstMoviesList) {
+    MovieItemAdapter(@NonNull ArrayList<Movie> alstMoviesList) {
         lstMovies = alstMoviesList;
     }
 
@@ -68,9 +68,9 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
             ibMoviePoster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, DetailsView.class);
+                    Intent intent = new Intent(context, DetailsMovieActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(DetailsView.MOVIE_INTENT_KEY, movie);
+                    bundle.putParcelable(DetailsMovieActivity.MOVIE_INTENT_KEY, movie);
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }

@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui.details;
+package com.example.general.android.popularmoviesapp.ui.details.reviews;
 
 import android.os.AsyncTask;
 
@@ -14,7 +14,7 @@ public class ReviewsApiQueryTask extends AsyncTask<URL, Void, ArrayList<Review>>
 
     private UpdateRecyclerView contract;
 
-    ReviewsApiQueryTask(UpdateRecyclerView acontract) {
+    public ReviewsApiQueryTask(UpdateRecyclerView acontract) {
         contract = acontract;
     }
 
@@ -41,7 +41,7 @@ public class ReviewsApiQueryTask extends AsyncTask<URL, Void, ArrayList<Review>>
         }
     }
 
-    interface UpdateRecyclerView {
+    public interface UpdateRecyclerView {
         void onUpdate(ArrayList<Review> results);
     }
 }
