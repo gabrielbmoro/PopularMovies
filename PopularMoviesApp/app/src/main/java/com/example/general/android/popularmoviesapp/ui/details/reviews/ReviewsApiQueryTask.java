@@ -13,14 +13,18 @@ import java.util.ArrayList;
 public class ReviewsApiQueryTask extends AsyncTask<URL, Void, ArrayList<Review>> {
 
     private UpdateRecyclerView contract;
+    private String apiKey;
+    private long nMovieId;
 
-    public ReviewsApiQueryTask(UpdateRecyclerView acontract) {
-        contract = acontract;
+    public ReviewsApiQueryTask(String apiKey, long movieId, UpdateRecyclerView acontract) {
+        this.apiKey = apiKey;
+        this.contract = acontract;
+        this.nMovieId = movieId;
     }
 
     @Override
     protected ArrayList<Review> doInBackground(URL... params) {
-        URL searchURL = params[0];
+        URL searchURL = NetworkUtils.buildURLToFetchReviews(apiKey, nMovieId);
         String response = null;
         ArrayList<Review> reviewLst = null;
 

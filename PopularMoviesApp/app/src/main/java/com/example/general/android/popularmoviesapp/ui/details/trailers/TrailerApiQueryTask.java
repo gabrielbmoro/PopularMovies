@@ -13,14 +13,18 @@ import java.util.ArrayList;
 public class TrailerApiQueryTask extends AsyncTask<URL, Void, ArrayList<VideoTrailer>> {
 
     private UpdateRecyclerView contract;
+    private String apiKey;
+    private long nMovieId;
 
-    public TrailerApiQueryTask(UpdateRecyclerView acontract) {
-        contract = acontract;
+    public TrailerApiQueryTask(String apiKey, long movieId, UpdateRecyclerView acontract) {
+        this.apiKey = apiKey;
+        this.contract = acontract;
+        this.nMovieId = movieId;
     }
 
     @Override
     protected ArrayList<VideoTrailer> doInBackground(URL... params) {
-        URL searchURL = params[0];
+        URL searchURL = NetworkUtils.buildURLToFetchTrailers(apiKey, nMovieId);
 
         ArrayList<VideoTrailer> results = null;
         try {

@@ -1,5 +1,10 @@
 package com.example.general.android.popularmoviesapp.ui.details;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +21,6 @@ import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewsAp
 import com.example.general.android.popularmoviesapp.ui.details.trailers.TrailerApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.trailers.VideoTrailerAdapter;
 import com.example.general.android.popularmoviesapp.util.MathService;
-import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 
 import java.util.ArrayList;
@@ -33,16 +37,13 @@ public class DetailsMovieActivity extends AppCompatActivity {
     private me.grantland.widget.AutofitTextView tvOverview;
     private RecyclerView rvTrailers;
     private RecyclerView rvReviews;
+    private DetailsViewModel viewModel;
     /**
      * Tasks
      */
     private TrailerApiQueryTask requestForTrailers;
     private ReviewsApiQueryTask requestForReviews;
 
-    /**
-     * Movie choosed
-     */
-    private Movie movie;
     /**
      * Key used to transfer movie from Main Screen to this screen.
      */
@@ -65,22 +66,33 @@ public class DetailsMovieActivity extends AppCompatActivity {
         rvTrailers = findViewById(R.id.rvTrailers);
         rvReviews = findViewById(R.id.rvReviews);
 
+        viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
+
+        setupRecyclerView();
+
         /**
          * Getting the movie from parcelable extras
          */
-        movie = getIntent().getParcelableExtra(MOVIE_INTENT_KEY);
+        Parcelable objectViaIntent = getIntent().getParcelableExtra(MOVIE_INTENT_KEY);
 
-        if (movie == null) finish();
+        if (!(objectViaIntent instanceof Movie)) finish();
 
+        viewModel.setMovie((Movie) objectViaIntent);
+
+        initReviewsObserver();
+        initTrailersObserver();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        dispareTasks();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         loadInfo();
-        loadTrailers();
-        loadReviews();
     }
 
     @Override
@@ -94,49 +106,72 @@ public class DetailsMovieActivity extends AppCompatActivity {
         }
     }
 
-    private void loadTrailers() {
+
+    private void setupRecyclerView() {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvTrailers.setLayoutManager(llm);
-
-        if (requestForTrailers != null) {
-            requestForTrailers.cancel(true);
-            requestForTrailers = null;
-        }
-        requestForTrailers = new TrailerApiQueryTask(new TrailerApiQueryTask.UpdateRecyclerView() {
-            @Override
-            public void onUpdate(ArrayList<VideoTrailer> results) {
-                rvTrailers.setAdapter(new VideoTrailerAdapter(results));
-            }
-        });
-        requestForTrailers.execute(NetworkUtils.buildURLToFetchTrailers(getString(R.string.api_key), movie.getId()));
+        LinearLayoutManager llm1 = new LinearLayoutManager(this);
+        rvReviews.setLayoutManager(llm1);
     }
 
-    private void loadReviews() {
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        rvReviews.setLayoutManager(llm);
 
-        if (requestForReviews != null) {
-            requestForReviews.cancel(true);
-            requestForReviews = null;
-        }
-        requestForReviews = new ReviewsApiQueryTask(new ReviewsApiQueryTask.UpdateRecyclerView() {
+    private void initReviewsObserver() {
+        final Observer<ArrayList<Review>> reviewsObserver = new Observer<ArrayList<Review>>() {
             @Override
-            public void onUpdate(ArrayList<Review> results) {
-                rvReviews.setAdapter(new ReviewAdapter((results)));
+            public void onChanged(@NonNull ArrayList<Review> reviews) {
+                if (rvReviews != null) {
+                    rvReviews.setAdapter(new ReviewAdapter(reviews));
+                }
             }
-        });
-        requestForReviews.execute(NetworkUtils.buildURLToFetchReviews(getString(R.string.api_key), movie.getId()));
+        };
+        viewModel.getReviewsLst().observe(this, reviewsObserver);
+    }
+
+    private void initTrailersObserver() {
+        final Observer<ArrayList<VideoTrailer>> trailersObserver = new Observer<ArrayList<VideoTrailer>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<VideoTrailer> videoTrailers) {
+                if (rvTrailers != null) {
+                    rvTrailers.setAdapter(new VideoTrailerAdapter(videoTrailers));
+                }
+            }
+        };
+        viewModel.getTrailerLst().observe(this, trailersObserver);
+    }
+
+    private void dispareTasks() {
+        Movie movieTarget = viewModel.getMovie().getValue();
+        if (movieTarget != null) {
+            requestForReviews = new ReviewsApiQueryTask(getString(R.string.api_key), movieTarget.getId(), new ReviewsApiQueryTask.UpdateRecyclerView() {
+                @Override
+                public void onUpdate(ArrayList<Review> results) {
+                    viewModel.setReviews(results);
+                }
+            });
+            requestForTrailers = new TrailerApiQueryTask(getString(R.string.api_key), movieTarget.getId(), new TrailerApiQueryTask.UpdateRecyclerView() {
+                @Override
+                public void onUpdate(ArrayList<VideoTrailer> results) {
+                    viewModel.setTrailerLst(results);
+                }
+            });
+
+            requestForReviews.execute();
+            requestForTrailers.execute();
+        }
     }
 
     /**
      * This method shows all information
      */
     private void loadInfo() {
-        tvTitle.setText(movie.getTitle());
-        tvReleaseDate.setText(MathService.getYearFromDate(movie.getReleaseDate()));
-        String userRatingFormatted = movie.getVoteAverage() + "/10";
-        tvUserRating.setText(userRatingFormatted);
-        tvOverview.setText(movie.getOverview());
-        PicassoLoader.loadImageFromURL(this, IMAGE_SIZE, movie.getPosterPath().replaceAll("/", ""), ivPoster);
+        Movie movieTarget = viewModel.getMovie().getValue();
+        if (movieTarget != null) {
+            tvTitle.setText(movieTarget.getTitle());
+            tvReleaseDate.setText(MathService.getYearFromDate(movieTarget.getReleaseDate()));
+            String userRatingFormatted = movieTarget.getVoteAverage() + "/10";
+            tvUserRating.setText(userRatingFormatted);
+            tvOverview.setText(movieTarget.getOverview());
+            PicassoLoader.loadImageFromURL(this, IMAGE_SIZE, movieTarget.getPosterPath().replaceAll("/", ""), ivPoster);
+        }
     }
 }
