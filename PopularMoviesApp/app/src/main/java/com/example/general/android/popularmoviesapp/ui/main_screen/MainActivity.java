@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,10 +22,11 @@ import java.util.ArrayList;
 /**
  * Main screen
  */
-public class MainActivity extends AppCompatActivity implements MovieApiQueryTask.UpdateRecyclerView {
+public class MainActivity extends AppCompatActivity implements MovieApiQueryTask.UpdateRecyclerView, SwipeRefreshLayout.OnRefreshListener {
 
     protected RecyclerView rcRecyclerView;
     protected Spinner spCriteria;
+    protected SwipeRefreshLayout srlMovies;
     private MainViewModel viewModel;
     /**
      * Task responsable for require information to the api
@@ -47,12 +49,15 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
 
         rcRecyclerView = findViewById(R.id.rvMovies);
         spCriteria = findViewById(R.id.spCriteria);
+        srlMovies = findViewById(R.id.srlMovies);
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         binding.setViewModel(viewModel);
 
         setupRecyclerView();
+
+        setupSwipeRefreshLayout();
 
         setupSpinnerListener();
 
@@ -66,17 +71,17 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
             @Override
             public void onUpdate(ArrayList<Movie> results) {
                 viewModel.setPopularMovies(results);
+                taskForTopRatedMovies.execute();
             }
         }, MovieApiQueryTask.QueryKind.POPULAR_MOVIES, getString(R.string.api_key));
         taskForTopRatedMovies = new MovieApiQueryTask(new MovieApiQueryTask.UpdateRecyclerView() {
             @Override
             public void onUpdate(ArrayList<Movie> results) {
                 viewModel.setTopRatedMovies(results);
+                srlMovies.setRefreshing(false);
             }
         }, MovieApiQueryTask.QueryKind.TOP_RATED_MOVIES, getString(R.string.api_key));
-
         taskForPopularMovies.execute();
-        taskForTopRatedMovies.execute();
     }
 
 
@@ -136,6 +141,10 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
         rcRecyclerView.setAdapter(new MovieItemAdapter(new ArrayList<Movie>()));
     }
 
+    private void setupSwipeRefreshLayout() {
+        srlMovies.setOnRefreshListener(this);
+    }
+
     private void setupSpinnerListener() {
         spCriteria.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -185,5 +194,12 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
                 rcRecyclerView.setAdapter(new MovieItemAdapter(results));
             }
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        viewModel.clearMovieLists();
+        rcRecyclerView.getAdapter().notifyDataSetChanged();
+        dispareTasks();
     }
 }

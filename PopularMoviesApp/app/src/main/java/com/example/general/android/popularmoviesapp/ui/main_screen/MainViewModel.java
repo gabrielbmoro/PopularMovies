@@ -35,4 +35,9 @@ public class MainViewModel extends AndroidViewModel {
         topRatedMovies.setValue(movies);
     }
 
+    public void clearMovieLists() {
+        if(popularMovies.getValue() != null) popularMovies.getValue().clear();
+        if(topRatedMovies.getValue() != null) topRatedMovies.getValue().clear();
+    }
+
 }
