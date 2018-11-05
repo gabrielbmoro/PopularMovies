@@ -1,5 +1,8 @@
 package com.example.general.android.popularmoviesapp.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +33,7 @@ public class NetworkUtils {
 
         try {
             url = new URL(builtUri.toString());
-        } catch(MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return url;
@@ -47,7 +50,7 @@ public class NetworkUtils {
 
         try {
             url = new URL(builtUri.toString());
-        } catch(MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return url;
@@ -64,7 +67,7 @@ public class NetworkUtils {
 
         try {
             url = new URL(builtUri.toString());
-        } catch(MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return url;
@@ -78,7 +81,7 @@ public class NetworkUtils {
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
 
-            if(scanner.hasNext()){
+            if (scanner.hasNext()) {
                 return scanner.next();
             } else {
                 return null;
@@ -86,6 +89,19 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    /**
+     * Reference: https://developer.android.com/training/monitoring-device-state/connectivity-monitoring
+     *
+     * @return true if there is connectivitity
+     */
+    public static boolean hasInternetConnection(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
 }

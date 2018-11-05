@@ -4,6 +4,7 @@
     package="com.example.general.android.popularmoviesapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,15 +13,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:theme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:theme">
         <activity android:name=".ui.main_screen.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.details.DetailsMovieActivity"
+        <activity
+            android:name=".ui.details.DetailsMovieActivity"
             android:parentActivityName=".ui.main_screen.MainActivity"
             tools:targetApi="jelly_bean">
             <meta-data

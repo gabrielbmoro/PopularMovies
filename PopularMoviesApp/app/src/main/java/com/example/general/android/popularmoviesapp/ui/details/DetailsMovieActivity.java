@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.databinding.ActivityDetailsViewBinding;
@@ -23,6 +24,7 @@ import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewAda
 import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewsApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.trailers.TrailerApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.trailers.VideoTrailerAdapter;
+import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 
 import java.util.ArrayList;
@@ -141,7 +143,7 @@ public class DetailsMovieActivity extends AppCompatActivity {
 
     private void dispareTasks() {
         Movie movieTarget = viewModel.getMovie().getValue();
-        if (movieTarget != null) {
+        if (movieTarget != null && NetworkUtils.hasInternetConnection(this)) {
             requestForTrailers = new TrailerApiQueryTask(getString(R.string.api_key), movieTarget.getId(), new TrailerApiQueryTask.UpdateRecyclerView() {
                 @Override
                 public void onUpdate(ArrayList<VideoTrailer> results) {
@@ -171,6 +173,8 @@ public class DetailsMovieActivity extends AppCompatActivity {
                 }
             });
             requestForTrailers.execute();
+        } else {
+            Toast.makeText(this, getString(R.string.messageConnection), Toast.LENGTH_SHORT).show();
         }
     }
 

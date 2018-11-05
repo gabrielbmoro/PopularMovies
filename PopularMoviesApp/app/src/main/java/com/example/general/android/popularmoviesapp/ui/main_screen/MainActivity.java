@@ -12,10 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.databinding.ActivityMainDiscoveryScreenBinding;
 import com.example.general.android.popularmoviesapp.model.Movie;
+import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 
 import java.util.ArrayList;
 
@@ -67,21 +69,26 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
     }
 
     private void dispareTasks() {
-        taskForPopularMovies = new MovieApiQueryTask(new MovieApiQueryTask.UpdateRecyclerView() {
-            @Override
-            public void onUpdate(ArrayList<Movie> results) {
-                viewModel.setPopularMovies(results);
-                taskForTopRatedMovies.execute();
-            }
-        }, MovieApiQueryTask.QueryKind.POPULAR_MOVIES, getString(R.string.api_key));
-        taskForTopRatedMovies = new MovieApiQueryTask(new MovieApiQueryTask.UpdateRecyclerView() {
-            @Override
-            public void onUpdate(ArrayList<Movie> results) {
-                viewModel.setTopRatedMovies(results);
-                srlMovies.setRefreshing(false);
-            }
-        }, MovieApiQueryTask.QueryKind.TOP_RATED_MOVIES, getString(R.string.api_key));
-        taskForPopularMovies.execute();
+        if (NetworkUtils.hasInternetConnection(this)) {
+            taskForPopularMovies = new MovieApiQueryTask(new MovieApiQueryTask.UpdateRecyclerView() {
+                @Override
+                public void onUpdate(ArrayList<Movie> results) {
+                    viewModel.setPopularMovies(results);
+                    taskForTopRatedMovies.execute();
+                }
+            }, MovieApiQueryTask.QueryKind.POPULAR_MOVIES, getString(R.string.api_key));
+            taskForTopRatedMovies = new MovieApiQueryTask(new MovieApiQueryTask.UpdateRecyclerView() {
+                @Override
+                public void onUpdate(ArrayList<Movie> results) {
+                    viewModel.setTopRatedMovies(results);
+                    srlMovies.setRefreshing(false);
+                }
+            }, MovieApiQueryTask.QueryKind.TOP_RATED_MOVIES, getString(R.string.api_key));
+            taskForPopularMovies.execute();
+        } else {
+            Toast.makeText(this, getString(R.string.messageConnection), Toast.LENGTH_SHORT).show();
+            srlMovies.setRefreshing(false);
+        }
     }
 
 
