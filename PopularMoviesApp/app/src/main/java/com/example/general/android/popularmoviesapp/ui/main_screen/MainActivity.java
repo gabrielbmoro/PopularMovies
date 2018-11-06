@@ -2,6 +2,7 @@ package com.example.general.android.popularmoviesapp.ui.main_screen;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,9 +18,12 @@ import android.widget.Toast;
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.databinding.ActivityMainDiscoveryScreenBinding;
 import com.example.general.android.popularmoviesapp.model.Movie;
+import com.example.general.android.popularmoviesapp.model.database.AppDatabase;
+import com.example.general.android.popularmoviesapp.util.AppExecutors;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main screen
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
 
     private static final int POPULAR_MOVIES = 0;
     private static final int TOP_RATED_MOVIES = 1;
+    private static final int FAVORITE_MOVIES = 2;
     private int currentSpinnerPosition = 0;
 
     @Override
@@ -153,28 +158,41 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
     }
 
     private void setupSpinnerListener() {
+        final Context context = this;
         spCriteria.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        ArrayList<Movie> lstMovies = new ArrayList();
                         switch (position) {
                             case POPULAR_MOVIES: {
-                                lstMovies = viewModel.getPopularMovies().getValue();
+                                if (viewModel.getPopularMovies().getValue() != null && !viewModel.getPopularMovies().getValue().isEmpty())
+                                    rcRecyclerView.setAdapter(new MovieItemAdapter(viewModel.getPopularMovies().getValue()));
                                 break;
                             }
                             case TOP_RATED_MOVIES: {
-                                lstMovies = viewModel.getTopRatedMovies().getValue();
+                                if (viewModel.getTopRatedMovies().getValue() != null && !viewModel.getTopRatedMovies().getValue().isEmpty())
+                                    rcRecyclerView.setAdapter(new MovieItemAdapter(viewModel.getTopRatedMovies().getValue()));
+                                break;
+                            }
+                            case FAVORITE_MOVIES: {
+                                AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        List<Movie> lst = AppDatabase.getInstance(context).movieDao().loadAllFavoriteMovies();
+                                        if (lst != null && !lst.isEmpty())
+                                            rcRecyclerView.setAdapter(new MovieItemAdapter(lst));
+                                    }
+                                });
                                 break;
                             }
                             default: {
-                                lstMovies = viewModel.getPopularMovies().getValue();
+                                if (viewModel.getPopularMovies().getValue() != null && !viewModel.getPopularMovies().getValue().isEmpty())
+                                    rcRecyclerView.setAdapter(new MovieItemAdapter(viewModel.getPopularMovies().getValue()));
                                 break;
                             }
                         }
 
-                        if (lstMovies != null && !lstMovies.isEmpty())
-                            rcRecyclerView.setAdapter(new MovieItemAdapter(lstMovies));
+
                         currentSpinnerPosition = position;
                     }
 

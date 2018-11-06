@@ -13,14 +13,14 @@ import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
 import com.example.general.android.popularmoviesapp.ui.details.DetailsMovieActivity;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
-import java.util.ArrayList;
+import java.util.List;
 
 public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.MovieItemViewHolder>{
 
-    private ArrayList<Movie> lstMovies;
+    private List<Movie> lstMovies;
     private Context context;
 
-    MovieItemAdapter(@NonNull ArrayList<Movie> alstMoviesList) {
+    MovieItemAdapter(@NonNull List<Movie> alstMoviesList) {
         lstMovies = alstMoviesList;
     }
 
@@ -44,7 +44,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
         return lstMovies.size();
     }
 
-    public void updateMovies(ArrayList<Movie> movies) {
+    public void updateMovies(List<Movie> movies) {
         this.lstMovies.clear();
         this.lstMovies.addAll(movies);
         notifyDataSetChanged();
