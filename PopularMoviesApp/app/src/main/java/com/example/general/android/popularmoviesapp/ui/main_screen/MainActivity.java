@@ -22,6 +22,7 @@ import com.example.general.android.popularmoviesapp.model.database.AppDatabase;
 import com.example.general.android.popularmoviesapp.util.AppExecutors;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
                                         List<Movie> lst = AppDatabase.getInstance(context).movieDao().loadAllFavoriteMovies();
                                         if (lst != null && !lst.isEmpty())
                                             rcRecyclerView.setAdapter(new MovieItemAdapter(lst));
+                                        else
+                                            rcRecyclerView.setAdapter(new MovieItemAdapter(new ArrayList<Movie>()));
                                     }
                                 });
                                 break;
