@@ -2,6 +2,7 @@ package com.example.general.android.popularmoviesapp.ui.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -10,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -20,10 +24,12 @@ import com.example.general.android.popularmoviesapp.databinding.ActivityDetailsV
 import com.example.general.android.popularmoviesapp.model.Movie;
 import com.example.general.android.popularmoviesapp.model.Review;
 import com.example.general.android.popularmoviesapp.model.VideoTrailer;
+import com.example.general.android.popularmoviesapp.model.database.AppDatabase;
 import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewAdapter;
 import com.example.general.android.popularmoviesapp.ui.details.reviews.ReviewsApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.trailers.TrailerApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.trailers.VideoTrailerAdapter;
+import com.example.general.android.popularmoviesapp.util.AppExecutors;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 
@@ -40,6 +46,8 @@ public class DetailsMovieActivity extends AppCompatActivity {
     private TextView tvTrailersLabel;
     private TextView tvReviewsLabel;
     private ScrollView svDetailsAboutMovie;
+    private Button btnMarkAsFavorite;
+
     private DetailsViewModel viewModel;
     /**
      * Tasks
@@ -67,10 +75,15 @@ public class DetailsMovieActivity extends AppCompatActivity {
         tvTrailersLabel = findViewById(R.id.tvTrailersLabel);
         tvReviewsLabel = findViewById(R.id.tvReviewsLabel);
         svDetailsAboutMovie = findViewById(R.id.svDetailsAboutMovie);
+        btnMarkAsFavorite = findViewById(R.id.btnMarkAsFavorite);
 
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
 
         setupRecyclerView();
+
+        setupButtonToFavoriteMovie();
+
+        updateFavoriteButtonStatus();
 
         /**
          * Getting the movie from parcelable extras
@@ -83,6 +96,80 @@ public class DetailsMovieActivity extends AppCompatActivity {
         binding.setViewModel(viewModel);
         initReviewsObserver();
         initTrailersObserver();
+    }
+
+    private void updateFavoriteButtonStatus() {
+        final Context context = this;
+        AppExecutors.getInstance()
+                .getDiskIO()
+                .execute(new Runnable() {
+                             @Override
+                             public void run() {
+                                 if (viewModel.getMovie().getValue() != null) {
+                                     if (checkIfMovieIsAFavorite(context, viewModel.getMovie().getValue())) {
+                                         runOnUiThread(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 btnMarkAsFavorite.setText(R.string.markOffFavorite);
+                                             }
+                                         });
+                                     } else {
+                                         runOnUiThread(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 btnMarkAsFavorite.setText(R.string.markAsFavorite);
+                                             }
+                                         });
+                                     }
+                                 }
+                             }
+                         }
+                );
+    }
+
+
+    private void setupButtonToFavoriteMovie() {
+        final Context context = this;
+
+        btnMarkAsFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Movie movie = viewModel.getMovie().getValue();
+
+                AppExecutors.getInstance().getDiskIO().execute(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                assert movie != null;
+                                boolean isAFavorite = checkIfMovieIsAFavorite(context, movie);
+                                if (!isAFavorite) {
+                                    movie.setFavorite(true);
+                                    AppDatabase.getInstance(context).movieDao().insertMovie(movie);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            btnMarkAsFavorite.setText(R.string.markOffFavorite);
+                                        }
+                                    });
+                                } else {
+                                    AppDatabase.getInstance(context).movieDao().deleteMovie(movie);
+                                    movie.setFavorite(false);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            btnMarkAsFavorite.setText(R.string.markAsFavorite);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+            }
+        });
+    }
+
+    public boolean checkIfMovieIsAFavorite(Context context, @NonNull Movie movie) {
+        return (!AppDatabase.getInstance(context).movieDao().getSomeFavoriteMovieAccordingId(movie.getId()).isEmpty());
     }
 
     @Override

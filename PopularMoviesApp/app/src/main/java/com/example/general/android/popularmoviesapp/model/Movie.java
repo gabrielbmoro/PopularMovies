@@ -1,5 +1,8 @@
 package com.example.general.android.popularmoviesapp.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,17 +13,26 @@ import java.util.ArrayList;
  *
  * @link https://stackoverflow.com/questions/36071023/how-to-make-class-with-multiple-integers-and-strings-parcelable
  */
+@Entity(tableName = "movie")
 public class Movie implements Parcelable {
 
     /**
      * Movie properties
      */
+    @PrimaryKey(autoGenerate = false)
     private long id;
+    @ColumnInfo(name = "vote_average")
     private int voteAverage;
+    @ColumnInfo(name = "title")
     private String title;
+    @ColumnInfo(name = "poster_path")
     private String posterPath;
+    @ColumnInfo(name = "overview")
     private String overview;
+    @ColumnInfo(name = "release_date")
     private String releaseDate;
+    @ColumnInfo(name = "is_favorite")
+    private boolean isFavorite = false;
     /**
      * These variables represent all keys used in json mapping for each movie property.
      */
@@ -128,6 +140,14 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     /**
      * I don't why this method is used.
      */
@@ -146,11 +166,13 @@ public class Movie implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeInt(voteAverage);
-        ArrayList<String> lst = new ArrayList<>();
-        lst.add(title);
-        lst.add(posterPath);
-        lst.add(overview);
-        lst.add(releaseDate);
-        dest.writeStringList(lst);
+        ArrayList<String> lstStrings = new ArrayList<>();
+        lstStrings.add(title);
+        lstStrings.add(posterPath);
+        lstStrings.add(overview);
+        lstStrings.add(releaseDate);
+        dest.writeStringList(lstStrings);
+        boolean[] lstBooleans = {isFavorite};
+        dest.writeBooleanArray(lstBooleans);
     }
 }
