@@ -179,11 +179,20 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
                                 AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        List<Movie> lst = AppDatabase.getInstance(context).movieDao().loadAllFavoriteMovies();
-                                        if (lst != null && !lst.isEmpty())
-                                            rcRecyclerView.setAdapter(new MovieItemAdapter(lst));
-                                        else
-                                            rcRecyclerView.setAdapter(new MovieItemAdapter(new ArrayList<Movie>()));
+                                        final List<Movie> lst = AppDatabase.getInstance(context).movieDao().loadAllFavoriteMovies();
+
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (rcRecyclerView.getAdapter() != null) {
+                                                    if (lst != null && !lst.isEmpty()) {
+                                                        ((MovieItemAdapter) rcRecyclerView.getAdapter()).updateMovies(lst);
+                                                    }
+                                                } else {
+                                                    rcRecyclerView.setAdapter(new MovieItemAdapter(lst));
+                                                }
+                                            }
+                                        });
                                     }
                                 });
                                 break;
@@ -226,8 +235,13 @@ public class MainActivity extends AppCompatActivity implements MovieApiQueryTask
 
     @Override
     public void onRefresh() {
-        viewModel.clearMovieLists();
-        rcRecyclerView.getAdapter().notifyDataSetChanged();
-        dispareTasks();
+        if (currentSpinnerPosition == FAVORITE_MOVIES) {
+            this.srlMovies.setRefreshing(false);
+        } else {
+            viewModel.clearMovieLists();
+            if (rcRecyclerView.getAdapter() != null)
+                rcRecyclerView.getAdapter().notifyDataSetChanged();
+            dispareTasks();
+        }
     }
 }
