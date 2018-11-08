@@ -81,9 +81,7 @@ public class DetailsMovieActivity extends AppCompatActivity {
 
         setupRecyclerView();
 
-        setupButtonToFavoriteMovie();
-
-        updateFavoriteButtonStatus();
+        setupButtonToFavoriteMovie();;
 
         /**
          * Getting the movie from parcelable extras
@@ -98,80 +96,6 @@ public class DetailsMovieActivity extends AppCompatActivity {
         initTrailersObserver();
     }
 
-    private void updateFavoriteButtonStatus() {
-        final Context context = this;
-        AppExecutors.getInstance()
-                .getDiskIO()
-                .execute(new Runnable() {
-                             @Override
-                             public void run() {
-                                 if (viewModel.getMovie().getValue() != null) {
-                                     if (checkIfMovieIsAFavorite(context, viewModel.getMovie().getValue())) {
-                                         runOnUiThread(new Runnable() {
-                                             @Override
-                                             public void run() {
-                                                 btnMarkAsFavorite.setText(R.string.markOffFavorite);
-                                             }
-                                         });
-                                     } else {
-                                         runOnUiThread(new Runnable() {
-                                             @Override
-                                             public void run() {
-                                                 btnMarkAsFavorite.setText(R.string.markAsFavorite);
-                                             }
-                                         });
-                                     }
-                                 }
-                             }
-                         }
-                );
-    }
-
-
-    private void setupButtonToFavoriteMovie() {
-        final Context context = this;
-
-        btnMarkAsFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Movie movie = viewModel.getMovie().getValue();
-
-                AppExecutors.getInstance().getDiskIO().execute(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                assert movie != null;
-                                boolean isAFavorite = checkIfMovieIsAFavorite(context, movie);
-                                if (!isAFavorite) {
-                                    movie.setFavorite(true);
-                                    AppDatabase.getInstance(context).movieDao().insertMovie(movie);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            btnMarkAsFavorite.setText(R.string.markOffFavorite);
-                                        }
-                                    });
-                                } else {
-                                    AppDatabase.getInstance(context).movieDao().deleteMovie(movie);
-                                    movie.setFavorite(false);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            btnMarkAsFavorite.setText(R.string.markAsFavorite);
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
-            }
-        });
-    }
-
-    public boolean checkIfMovieIsAFavorite(Context context, @NonNull Movie movie) {
-        return (!AppDatabase.getInstance(context).movieDao().getSomeFavoriteMovieAccordingId(movie.getId()).isEmpty());
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -182,6 +106,8 @@ public class DetailsMovieActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadInfo();
+
+        updateFavoriteButtonStatus();
     }
 
     @Override
@@ -273,6 +199,80 @@ public class DetailsMovieActivity extends AppCompatActivity {
         if (movieTarget != null) {
             PicassoLoader.loadImageFromURL(this, IMAGE_SIZE, movieTarget.getPosterPath().replaceAll("/", ""), ivPoster);
         }
+    }
+
+    private void updateFavoriteButtonStatus() {
+        final Context context = this;
+        AppExecutors.getInstance()
+                .getDiskIO()
+                .execute(new Runnable() {
+                             @Override
+                             public void run() {
+                                 if (viewModel.getMovie().getValue() != null) {
+                                     if (checkIfMovieIsAFavorite(context, viewModel.getMovie().getValue())) {
+                                         runOnUiThread(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 btnMarkAsFavorite.setText(R.string.markOffFavorite);
+                                             }
+                                         });
+                                     } else {
+                                         runOnUiThread(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 btnMarkAsFavorite.setText(R.string.markAsFavorite);
+                                             }
+                                         });
+                                     }
+                                 }
+                             }
+                         }
+                );
+    }
+
+
+    private void setupButtonToFavoriteMovie() {
+        final Context context = this;
+
+        btnMarkAsFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Movie movie = viewModel.getMovie().getValue();
+
+                AppExecutors.getInstance().getDiskIO().execute(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                assert movie != null;
+                                boolean isAFavorite = checkIfMovieIsAFavorite(context, movie);
+                                if (!isAFavorite) {
+                                    movie.setFavorite(true);
+                                    AppDatabase.getInstance(context).movieDao().insertMovie(movie);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            btnMarkAsFavorite.setText(R.string.markOffFavorite);
+                                        }
+                                    });
+                                } else {
+                                    AppDatabase.getInstance(context).movieDao().deleteMovie(movie);
+                                    movie.setFavorite(false);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            btnMarkAsFavorite.setText(R.string.markAsFavorite);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+            }
+        });
+    }
+
+    public boolean checkIfMovieIsAFavorite(Context context, @NonNull Movie movie) {
+        return (!AppDatabase.getInstance(context).movieDao().getSomeFavoriteMovieAccordingId(movie.getId()).isEmpty());
     }
 }
 

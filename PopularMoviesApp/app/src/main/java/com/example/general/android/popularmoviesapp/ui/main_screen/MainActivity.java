@@ -22,7 +22,6 @@ import com.example.general.android.popularmoviesapp.model.database.AppDatabase;
 import com.example.general.android.popularmoviesapp.util.AppExecutors;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
