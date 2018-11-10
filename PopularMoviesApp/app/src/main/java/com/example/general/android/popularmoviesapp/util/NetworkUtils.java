@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,6 +14,7 @@ import java.util.Scanner;
 
 /**
  * This class connects with api service.
+ * The methods are provided by udacity's android projects - From git hub (repository)
  */
 public class NetworkUtils {
 
@@ -41,8 +43,9 @@ public class NetworkUtils {
 
     /**
      * These method converts the URI in URL with api key autentication.
+     *
      * @param a_strApiKey defined by API
-     * @param movieId used to find the review according the movie's id
+     * @param movieId     used to find the review according the movie's id
      * @return URL formatted
      */
     public static URL buildURLToFetchReviews(String a_strApiKey, long movieId) {
@@ -64,6 +67,7 @@ public class NetworkUtils {
 
     /**
      * These method converts the URI in URL with api key autentication.
+     *
      * @param a_strApiKey defined by API
      * @param strSortedBy popular or top rated
      * @return URL formatted
@@ -87,6 +91,7 @@ public class NetworkUtils {
 
     /**
      * These method make some request.
+     *
      * @param url defines the request
      * @return some response in String
      * @throws IOException exception which may occur

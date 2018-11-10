@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 /**
  * This class convert the json string in a movies list
+ * Reference: https://stackoverflow.com/questions/16769809/json-object-how-to-get-values
  */
 public class JSONParser {
 

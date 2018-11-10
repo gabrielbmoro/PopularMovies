@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 /**
  * This class is the same used in the lesson.
+ * The methods are provided by udacity's android projects - From git hub (repository)
  */
 public class AppExecutors {
 
