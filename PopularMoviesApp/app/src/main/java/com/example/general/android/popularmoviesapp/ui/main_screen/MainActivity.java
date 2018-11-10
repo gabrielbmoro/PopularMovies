@@ -2,6 +2,7 @@ package com.example.general.android.popularmoviesapp.ui.main_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,9 +37,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
 
         ActivityMainDiscoveryScreenBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main_discovery_screen);
-
-        setContentView(R.layout.activity_main_discovery_screen);
-
+        binding.setViewModel(viewModel);
 
         rcRecyclerView = findViewById(R.id.rvMovies);
         spCriteria = findViewById(R.id.spCriteria);
@@ -46,18 +45,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
-        binding.setViewModel(viewModel);
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        rcRecyclerView.setLayoutManager(gridLayoutManager);
-        MovieItemAdapter adapter = new MovieItemAdapter(new ArrayList<Movie>());
-        rcRecyclerView.setAdapter(adapter);
-        viewModel.setAdapter(adapter);
+        setupRecyclerView();
 
         setupSwipeRefreshLayout();
 
         setupSpinnerListener();
 
+    }
+
+    private void setupRecyclerView() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        rcRecyclerView.setLayoutManager(gridLayoutManager);
+        MovieItemAdapter adapter = new MovieItemAdapter(new ArrayList<Movie>());
+        rcRecyclerView.setAdapter(adapter);
+        viewModel.setAdapter(adapter);
+        rcRecyclerView.setHasFixedSize(true);
+        rcRecyclerView.setItemViewCacheSize(20);
     }
 
     @Override
@@ -87,11 +90,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         switch (position) {
                             case POPULAR_MOVIES: {
-                                viewModel.loadPopularMovies();
+                                viewModel.loadPopularMovies(getAfterLoadingContract());
                                 break;
                             }
                             case TOP_RATED_MOVIES: {
-                                viewModel.loadTopRatedMovies();
+                                viewModel.loadTopRatedMovies(getAfterLoadingContract());
                                 break;
                             }
                             case FAVORITE_MOVIES: {
@@ -121,13 +124,28 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 viewModel.loadFavoriteMovies();
                 break;
             case POPULAR_MOVIES:
-                viewModel.loadPopularMovies();
+                viewModel.loadPopularMovies(getAfterLoadingContract());
                 break;
             case TOP_RATED_MOVIES:
-                viewModel.loadTopRatedMovies();
+                viewModel.loadTopRatedMovies(getAfterLoadingContract());
                 break;
             default:
                 break;
         }
+    }
+
+    @NonNull
+    private MainViewModel.AfterLoading getAfterLoadingContract() {
+        return new MainViewModel.AfterLoading() {
+            @Override
+            public void showRefresh() {
+                srlMovies.setRefreshing(true);
+            }
+
+            @Override
+            public void hideRefresh() {
+                srlMovies.setRefreshing(false);
+            }
+        };
     }
 }

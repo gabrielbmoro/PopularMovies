@@ -1,5 +1,8 @@
 package com.example.general.android.popularmoviesapp.model;
 
+/**
+ * The class that represents the information about the trailer of a Movie
+ */
 public class VideoTrailer {
 
     /**

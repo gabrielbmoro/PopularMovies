@@ -1,5 +1,8 @@
 package com.example.general.android.popularmoviesapp.model;
 
+/**
+ * This class represents the review about some Movie
+ */
 public class Review {
 
     private String author;

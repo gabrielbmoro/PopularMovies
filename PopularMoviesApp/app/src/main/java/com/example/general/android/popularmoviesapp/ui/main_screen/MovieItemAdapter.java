@@ -64,6 +64,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
 
         void bind(final Context context, final Movie movie, String fileName) {
             PicassoLoader.loadImageFromURL(context, IMAGE_SIZE, fileName, ibMoviePoster);
+
             /**
              * This event call the details screen.
              */

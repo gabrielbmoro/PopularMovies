@@ -10,6 +10,7 @@
         <variable
             name="viewModel"
             type="com.example.general.android.popularmoviesapp.ui.details.DetailsViewModel" />
+
     </data>
 
     <android.support.constraint.ConstraintLayout

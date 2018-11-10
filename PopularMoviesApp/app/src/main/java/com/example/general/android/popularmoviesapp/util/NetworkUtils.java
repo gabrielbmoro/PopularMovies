@@ -39,6 +39,12 @@ public class NetworkUtils {
         return url;
     }
 
+    /**
+     * These method converts the URI in URL with api key autentication.
+     * @param a_strApiKey defined by API
+     * @param movieId used to find the review according the movie's id
+     * @return URL formatted
+     */
     public static URL buildURLToFetchReviews(String a_strApiKey, long movieId) {
         String urlFormatted = MOVIEAPI_URL + movieId + "/reviews";
         Uri builtUri = Uri.parse(urlFormatted)
@@ -56,6 +62,12 @@ public class NetworkUtils {
         return url;
     }
 
+    /**
+     * These method converts the URI in URL with api key autentication.
+     * @param a_strApiKey defined by API
+     * @param strSortedBy popular or top rated
+     * @return URL formatted
+     */
     public static URL buildURLToAccessMovies(String a_strApiKey, String strSortedBy) {
         String urlFormatted = MOVIEAPI_URL + strSortedBy;
         Uri builtUri = Uri.parse(urlFormatted)
@@ -73,6 +85,12 @@ public class NetworkUtils {
         return url;
     }
 
+    /**
+     * These method make some request.
+     * @param url defines the request
+     * @return some response in String
+     * @throws IOException exception which may occur
+     */
     public static String getResponseFromHttpURL(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 

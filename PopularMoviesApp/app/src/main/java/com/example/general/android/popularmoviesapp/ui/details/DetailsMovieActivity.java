@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.general.android.popularmoviesapp.R;
@@ -29,9 +28,8 @@ public class DetailsMovieActivity extends AppCompatActivity {
     private ImageView ivPoster;
     private RecyclerView rvTrailers;
     private RecyclerView rvReviews;
-    private TextView tvTrailersLabel;
     private TextView tvReviewsLabel;
-    private ScrollView svDetailsAboutMovie;
+    private TextView tvTrailersLabel;
     private Button btnMarkAsFavorite;
 
     private DetailsViewModel viewModel;
@@ -53,10 +51,9 @@ public class DetailsMovieActivity extends AppCompatActivity {
         ivPoster = findViewById(R.id.ivPoster);
         rvTrailers = findViewById(R.id.rvTrailers);
         rvReviews = findViewById(R.id.rvReviews);
-        tvTrailersLabel = findViewById(R.id.tvTrailersLabel);
-        tvReviewsLabel = findViewById(R.id.tvReviewsLabel);
-        svDetailsAboutMovie = findViewById(R.id.svDetailsAboutMovie);
         btnMarkAsFavorite = findViewById(R.id.btnMarkAsFavorite);
+        tvReviewsLabel = findViewById(R.id.tvReviewsLabel);
+        tvTrailersLabel = findViewById(R.id.tvTrailersLabel);
 
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
 
@@ -93,8 +90,32 @@ public class DetailsMovieActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        viewModel.loadReview();
-        viewModel.loadTrailers();
+        viewModel.loadReview(new DetailsViewModel.VisibilityContract.ReviewsVisibility() {
+            @Override
+            public void toVisible() {
+                rvReviews.setVisibility(RecyclerView.VISIBLE);
+                tvReviewsLabel.setVisibility(TextView.VISIBLE);
+            }
+
+            @Override
+            public void toGone() {
+                rvReviews.setVisibility(RecyclerView.GONE);
+                tvReviewsLabel.setVisibility(TextView.GONE);
+            }
+        });
+        viewModel.loadTrailers(new DetailsViewModel.VisibilityContract.TrailersVisibility() {
+            @Override
+            public void toVisible() {
+                rvTrailers.setVisibility(RecyclerView.VISIBLE);
+                tvTrailersLabel.setVisibility(TextView.VISIBLE);
+            }
+
+            @Override
+            public void toGone() {
+                rvTrailers.setVisibility(RecyclerView.GONE);
+                tvTrailersLabel.setVisibility(TextView.GONE);
+            }
+        });
         viewModel.loadImagePoster(ivPoster, IMAGE_SIZE);
         viewModel.updateTheFavoriteButton(btnMarkAsFavorite);
     }

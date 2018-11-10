@@ -17,16 +17,15 @@ import java.util.List;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
     private ArrayList<Review> lstReviews;
-    private Context context;
 
-    public ReviewAdapter(ArrayList<Review> alstReviewList) {
+    ReviewAdapter(ArrayList<Review> alstReviewList) {
         lstReviews = alstReviewList;
     }
 
     @NonNull
     @Override
     public ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        context = viewGroup.getContext();
+        Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View viewCreated = inflater.inflate(R.layout.review_item, viewGroup, false);
         return new ReviewViewHolder(viewCreated);

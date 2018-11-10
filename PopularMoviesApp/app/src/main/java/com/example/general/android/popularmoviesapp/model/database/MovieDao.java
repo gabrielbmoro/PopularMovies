@@ -10,6 +10,9 @@ import com.example.general.android.popularmoviesapp.model.Movie;
 
 import java.util.List;
 
+/**
+ * This interface is used to data manipulation using the movie table.
+ */
 @Dao
 public interface MovieDao {
 

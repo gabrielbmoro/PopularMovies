@@ -9,7 +9,6 @@ import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
 import com.example.general.android.popularmoviesapp.model.database.AppDatabase;
 import com.example.general.android.popularmoviesapp.ui.main_screen.tasks.MovieApiQueryTask;
-import com.example.general.android.popularmoviesapp.ui.main_screen.tasks.UpdateRecyclerView;
 import com.example.general.android.popularmoviesapp.util.AppExecutors;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 
@@ -21,49 +20,47 @@ public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<List<Movie>> topRatedMovies = new MutableLiveData<>();
     private MutableLiveData<List<Movie>> favoriteMovies = new MutableLiveData<>();
     private MovieItemAdapter movieItemAdapter;
-    /**
-     * Task responsable for require information to the api
-     */
-    private MovieApiQueryTask taskForPopularMovies;
-    private MovieApiQueryTask taskForTopRatedMovies;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-
-        taskForPopularMovies = new MovieApiQueryTask(new UpdateRecyclerView() {
-            @Override
-            public void onUpdate(List<Movie> results) {
-                popularMovies.setValue(results);
-                movieItemAdapter.updateMovies(popularMovies.getValue());
-            }
-        }, MovieApiQueryTask.QueryKind.POPULAR_MOVIES, application.getString(R.string.api_key));
-        taskForTopRatedMovies = new MovieApiQueryTask(new UpdateRecyclerView() {
-            @Override
-            public void onUpdate(List<Movie> results) {
-                topRatedMovies.setValue(results);
-                movieItemAdapter.updateMovies(topRatedMovies.getValue());
-            }
-        }, MovieApiQueryTask.QueryKind.TOP_RATED_MOVIES, application.getString(R.string.api_key));
-
     }
 
-    void loadPopularMovies() {
+    void loadPopularMovies(final AfterLoading afterLoading) {
+        afterLoading.showRefresh();
         if (popularMovies.getValue() == null || (popularMovies.getValue() != null && popularMovies.getValue().isEmpty())) {
             if (NetworkUtils.hasInternetConnection(getApplication())) {
-                taskForPopularMovies.execute();
+                afterLoading.showRefresh();
+                new MovieApiQueryTask(new MovieApiQueryTask.UpdateRecyclerView() {
+                    @Override
+                    public void onUpdate(List<Movie> results) {
+                        popularMovies.setValue(results);
+                        movieItemAdapter.updateMovies(popularMovies.getValue());
+                        afterLoading.hideRefresh();
+                    }
+                }, MovieApiQueryTask.QueryKind.POPULAR_MOVIES, getApplication().getString(R.string.api_key)).execute();
             }
         } else {
             movieItemAdapter.updateMovies(popularMovies.getValue());
+            afterLoading.hideRefresh();
         }
     }
 
-    void loadTopRatedMovies() {
+    void loadTopRatedMovies(final AfterLoading afterLoading) {
+        afterLoading.showRefresh();
         if (topRatedMovies.getValue() == null || (topRatedMovies.getValue() != null && topRatedMovies.getValue().isEmpty())) {
             if (NetworkUtils.hasInternetConnection(getApplication())) {
-                taskForTopRatedMovies.execute();
+                new MovieApiQueryTask(new MovieApiQueryTask.UpdateRecyclerView() {
+                    @Override
+                    public void onUpdate(List<Movie> results) {
+                        topRatedMovies.setValue(results);
+                        movieItemAdapter.updateMovies(topRatedMovies.getValue());
+                        afterLoading.hideRefresh();
+                    }
+                }, MovieApiQueryTask.QueryKind.TOP_RATED_MOVIES, getApplication().getString(R.string.api_key)).execute();
             }
         } else {
             movieItemAdapter.updateMovies(topRatedMovies.getValue());
+            afterLoading.hideRefresh();
         }
     }
 
@@ -87,6 +84,12 @@ public class MainViewModel extends AndroidViewModel {
 
     void setAdapter(@NonNull MovieItemAdapter adapterX) {
         this.movieItemAdapter = adapterX;
+    }
+
+    public interface AfterLoading {
+        void showRefresh();
+
+        void hideRefresh();
     }
 
 }

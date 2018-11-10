@@ -23,7 +23,7 @@ public class VideoTrailerAdapter extends RecyclerView.Adapter<VideoTrailerAdapte
     private ArrayList<VideoTrailer> lstTrailers;
     private Context context;
 
-    public VideoTrailerAdapter(ArrayList<VideoTrailer> alstMoviesList) {
+    VideoTrailerAdapter(ArrayList<VideoTrailer> alstMoviesList) {
         lstTrailers = alstMoviesList;
     }
 

@@ -16,12 +16,12 @@ import java.util.ArrayList;
 public class JSONParser {
 
     public static ArrayList<Movie> gettingResultsValues(String astrJsonText) {
-        JSONObject results = null;
+        JSONObject results;
         ArrayList<Movie> moviesLst = new ArrayList<>();
         try {
             results = new JSONObject(astrJsonText);
             JSONArray jsonObjects = results.getJSONArray("results");
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             for (int count = 0; count < jsonObjects.length(); count++) {
                 jsonObject = jsonObjects.getJSONObject(count);
                 Movie movieToBeReturned = new Movie();
@@ -40,13 +40,13 @@ public class JSONParser {
     }
 
     public static ArrayList<VideoTrailer> gettingVideoResultsValues(String astrJsonText) {
-        JSONObject results = null;
+        JSONObject results;
         ArrayList<VideoTrailer> videosLst = new ArrayList<>();
         if (astrJsonText != null) {
             try {
                 results = new JSONObject(astrJsonText);
                 JSONArray jsonObjects = results.getJSONArray("results");
-                JSONObject jsonObject = null;
+                JSONObject jsonObject;
                 for (int count = 0; count < jsonObjects.length(); count++) {
                     jsonObject = jsonObjects.getJSONObject(count);
                     VideoTrailer videoToBeReturned = new VideoTrailer();
@@ -65,13 +65,13 @@ public class JSONParser {
     }
 
     public static ArrayList<Review> gettingReviewResultsValues(String astrJsonText) {
-        JSONObject results = null;
+        JSONObject results;
         ArrayList<Review> reviewLst = new ArrayList<>();
         if (astrJsonText != null) {
             try {
                 results = new JSONObject(astrJsonText);
                 JSONArray jsonObjects = results.getJSONArray("results");
-                JSONObject jsonObject = null;
+                JSONObject jsonObject;
                 for (int count = 0; count < jsonObjects.length(); count++) {
                     jsonObject = jsonObjects.getJSONObject(count);
                     Review reviewToBeReturned = new Review();

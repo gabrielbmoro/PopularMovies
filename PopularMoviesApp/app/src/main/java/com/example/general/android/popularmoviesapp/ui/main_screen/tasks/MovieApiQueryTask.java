@@ -9,6 +9,7 @@ import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Task used to get information from api, and update the screen that implements
@@ -63,5 +64,9 @@ public class MovieApiQueryTask extends AsyncTask<URL, Void, ArrayList<Movie>> {
     }
 
     public enum QueryKind {POPULAR_MOVIES, TOP_RATED_MOVIES}
+
+    public interface UpdateRecyclerView {
+        void onUpdate(List<Movie> results);
+    }
 
 }
