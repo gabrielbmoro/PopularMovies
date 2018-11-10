@@ -25,7 +25,7 @@ public class ReviewsApiQueryTask extends AsyncTask<URL, Void, ArrayList<Review>>
     @Override
     protected ArrayList<Review> doInBackground(URL... params) {
         URL searchURL = NetworkUtils.buildURLToFetchReviews(apiKey, nMovieId);
-        String response = null;
+        String response;
         ArrayList<Review> reviewLst = null;
 
         try {

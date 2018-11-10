@@ -78,7 +78,6 @@ public class JSONParser {
                     reviewToBeReturned.setAuthor(jsonObject.getString(Review.AUTHOR_KEY));
                     reviewToBeReturned.setContent(jsonObject.getString(Review.CONTENT_KEY));
                     reviewToBeReturned.setId(jsonObject.getString(Review.ID_KEY));
-                    reviewToBeReturned.setUrl(jsonObject.getString(Review.URL_KEY));
                     reviewLst.add(reviewToBeReturned);
                 }
             } catch (JSONException e) {

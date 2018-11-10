@@ -41,7 +41,6 @@ public class DetailsMovieActivity extends AppCompatActivity {
     /**
      * Image size used to load the image using picasso.
      */
-    static final String IMAGE_SIZE = "w342";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +56,6 @@ public class DetailsMovieActivity extends AppCompatActivity {
 
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
 
-        /**
-         * Getting the movie from parcelable extras
-         */
         Parcelable objectViaIntent = getIntent().getParcelableExtra(MOVIE_INTENT_KEY);
 
         if (!(objectViaIntent instanceof Movie)) finish();
@@ -67,10 +63,6 @@ public class DetailsMovieActivity extends AppCompatActivity {
         viewModel.setMovie((Movie) objectViaIntent);
         binding.setViewModel(viewModel);
 
-
-        /**
-         * Setup recyclerview
-         */
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvTrailers.setLayoutManager(llm);
         VideoTrailerAdapter adapterTrailers = new VideoTrailerAdapter(new ArrayList<VideoTrailer>());
@@ -116,7 +108,7 @@ public class DetailsMovieActivity extends AppCompatActivity {
                 tvTrailersLabel.setVisibility(TextView.GONE);
             }
         });
-        viewModel.loadImagePoster(ivPoster, IMAGE_SIZE);
+        viewModel.loadImagePoster(ivPoster);
         viewModel.updateTheFavoriteButton(btnMarkAsFavorite);
     }
 

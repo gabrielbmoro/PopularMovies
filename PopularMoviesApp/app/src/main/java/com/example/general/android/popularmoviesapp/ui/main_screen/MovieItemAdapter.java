@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
 import com.example.general.android.popularmoviesapp.ui.details.DetailsMovieActivity;
+import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 
 import java.util.List;
@@ -63,8 +64,11 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
         }
 
         void bind(final Context context, final Movie movie, String fileName) {
-            PicassoLoader.loadImageFromURL(context, IMAGE_SIZE, fileName, ibMoviePoster);
-
+            if(NetworkUtils.hasInternetConnection(context)) {
+                PicassoLoader.loadImageFromURL(context, IMAGE_SIZE, fileName, ibMoviePoster);
+            } else {
+                ibMoviePoster.setImageResource(R.drawable.no_connection);
+            }
             /**
              * This event call the details screen.
              */

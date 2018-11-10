@@ -17,11 +17,8 @@ public class VideoTrailer {
      * These variables represent all keys used in json mapping for each video property.
      */
     public static final String ID_KEY = "id";
-    public static final String ISO_6391_FORMAT_KEY = "iso_639_1";
-    public static final String ISO_3166_FORMAT_KEY = "iso_3166_1";
     public static final String KEY_KEY = "key";
     public static final String NAME_KEY = "name";
-    public static final String SITE_KEY = "site";
     public static final String SIZE_KEY = "size";
     public static final String TYPE_KEY = "type";
 

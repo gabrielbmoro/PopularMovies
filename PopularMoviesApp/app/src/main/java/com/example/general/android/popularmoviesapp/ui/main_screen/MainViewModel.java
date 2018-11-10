@@ -38,6 +38,8 @@ public class MainViewModel extends AndroidViewModel {
                         afterLoading.hideRefresh();
                     }
                 }, MovieApiQueryTask.QueryKind.POPULAR_MOVIES, getApplication().getString(R.string.api_key)).execute();
+            } else {
+                afterLoading.showMessageNoConnection(getApplication());
             }
         } else {
             movieItemAdapter.updateMovies(popularMovies.getValue());
@@ -57,6 +59,8 @@ public class MainViewModel extends AndroidViewModel {
                         afterLoading.hideRefresh();
                     }
                 }, MovieApiQueryTask.QueryKind.TOP_RATED_MOVIES, getApplication().getString(R.string.api_key)).execute();
+            } else {
+                afterLoading.showMessageNoConnection(getApplication());
             }
         } else {
             movieItemAdapter.updateMovies(topRatedMovies.getValue());
@@ -90,6 +94,8 @@ public class MainViewModel extends AndroidViewModel {
         void showRefresh();
 
         void hideRefresh();
+
+        void showMessageNoConnection(Application applicationReference);
     }
 
 }

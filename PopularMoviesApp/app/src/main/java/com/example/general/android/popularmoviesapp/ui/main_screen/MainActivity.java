@@ -1,5 +1,6 @@
 package com.example.general.android.popularmoviesapp.ui.main_screen;
 
+import android.app.Application;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.databinding.ActivityMainDiscoveryScreenBinding;
@@ -145,6 +147,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void hideRefresh() {
                 srlMovies.setRefreshing(false);
+            }
+
+            @Override
+            public void showMessageNoConnection(Application applicationReference) {
+                Toast.makeText(applicationReference.getBaseContext(), getResources().getString(R.string.messageConnection), Toast.LENGTH_SHORT).show();
             }
         };
     }

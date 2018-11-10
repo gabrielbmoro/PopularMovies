@@ -19,7 +19,7 @@ public class Movie implements Parcelable {
     /**
      * Movie properties
      */
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey()
     private long id;
     @ColumnInfo(name = "vote_average")
     private int voteAverage;

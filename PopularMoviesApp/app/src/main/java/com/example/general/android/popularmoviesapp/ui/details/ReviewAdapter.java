@@ -42,7 +42,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return lstReviews.size();
     }
 
-    public void updateReviews(List<Review> reviewList) {
+    void updateReviews(List<Review> reviewList) {
         this.lstReviews.clear();
         this.lstReviews.addAll(reviewList);
         notifyDataSetChanged();

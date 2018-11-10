@@ -3,12 +3,9 @@ package com.example.general.android.popularmoviesapp.ui.details;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.databinding.Bindable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
@@ -29,13 +26,6 @@ public class DetailsViewModel extends AndroidViewModel {
     private MutableLiveData<Movie> movie = new MutableLiveData<>();
     private MutableLiveData<ArrayList<VideoTrailer>> trailerLst = new MutableLiveData<>();
     private MutableLiveData<ArrayList<Review>> reviewsLst = new MutableLiveData<>();
-
-    /**
-     * Tasks
-     */
-    private TrailerApiQueryTask requestForTrailers;
-    private ReviewsApiQueryTask requestForReviews;
-
     private VideoTrailerAdapter adapterTrailers;
     private ReviewAdapter adapterReviews;
 
@@ -54,19 +44,19 @@ public class DetailsViewModel extends AndroidViewModel {
     void loadReview(final VisibilityContract.ReviewsVisibility contract) {
         if (reviewsLst.getValue() == null || (reviewsLst.getValue() != null && reviewsLst.getValue().isEmpty())) {
             if (NetworkUtils.hasInternetConnection(getApplication()) && movie.getValue() != null) {
-                requestForReviews = new ReviewsApiQueryTask(apiKey, movie.getValue().getId(), new ReviewsApiQueryTask.UpdateRecyclerView() {
+                new ReviewsApiQueryTask(apiKey, movie.getValue().getId(), new ReviewsApiQueryTask.UpdateRecyclerView() {
                     @Override
                     public void onUpdate(ArrayList<Review> results) {
                         reviewsLst.setValue(results);
                         adapterReviews.updateReviews(results);
-                        if(adapterReviews.getItemCount() > 0) contract.toVisible(); else contract.toGone();
+                        if (adapterReviews.getItemCount() > 0) contract.toVisible();
+                        else contract.toGone();
                     }
-                });
-                requestForReviews.execute();
+                }).execute();
             }
         } else {
             adapterReviews.updateReviews(reviewsLst.getValue());
-            if(adapterReviews.getItemCount() > 0) {
+            if (adapterReviews.getItemCount() > 0) {
                 contract.toVisible();
             } else {
                 contract.toGone();
@@ -76,21 +66,23 @@ public class DetailsViewModel extends AndroidViewModel {
 
     void loadTrailers(final VisibilityContract.TrailersVisibility contract) {
         if (trailerLst.getValue() == null || (trailerLst.getValue() != null && trailerLst.getValue().isEmpty())) {
-            if (NetworkUtils.hasInternetConnection(getApplication())){
-                requestForTrailers = new TrailerApiQueryTask(apiKey, movie.getValue().getId(), new TrailerApiQueryTask.UpdateRecyclerView() {
-                    @Override
-                    public void onUpdate(ArrayList<VideoTrailer> results) {
-                        trailerLst.setValue(results);
-                        adapterTrailers.updateTrailers(results);
-                        if(adapterTrailers.getItemCount() > 0) contract.toVisible(); else contract.toGone();
-                    }
-                });
-                requestForTrailers.execute();
+            if (NetworkUtils.hasInternetConnection(getApplication())) {
+                if (movie.getValue() != null) {
+                    new TrailerApiQueryTask(apiKey, movie.getValue().getId(), new TrailerApiQueryTask.UpdateRecyclerView() {
+                        @Override
+                        public void onUpdate(ArrayList<VideoTrailer> results) {
+                            trailerLst.setValue(results);
+                            adapterTrailers.updateTrailers(results);
+                            if (adapterTrailers.getItemCount() > 0) contract.toVisible();
+                            else contract.toGone();
+                        }
+                    }).execute();
+                }
 
             }
         } else {
             adapterTrailers.updateTrailers(trailerLst.getValue());
-            if(adapterTrailers.getItemCount() > 0) {
+            if (adapterTrailers.getItemCount() > 0) {
                 contract.toVisible();
             } else {
                 contract.toGone();
@@ -98,8 +90,14 @@ public class DetailsViewModel extends AndroidViewModel {
         }
     }
 
-    void loadImagePoster(ImageView imageView, String imageSize) {
-        PicassoLoader.loadImageFromURL(getApplication(), imageSize, movie.getValue().getPosterPath().replaceAll("/", ""), imageView);
+    void loadImagePoster(ImageView imageView) {
+        final String imageSize = "w342";
+        if (NetworkUtils.hasInternetConnection(getApplication())) {
+            if (movie.getValue() != null)
+                PicassoLoader.loadImageFromURL(getApplication(), imageSize, movie.getValue().getPosterPath().replaceAll("/", ""), imageView);
+        } else {
+            imageView.setImageResource(R.drawable.no_connection);
+        }
     }
 
     void updateTheFavoriteButton(final Button favoriteButton) {
@@ -166,19 +164,29 @@ public class DetailsViewModel extends AndroidViewModel {
     }
 
     public String getMovieTitle() {
-        return movie.getValue().getTitle();
+        if (movie.getValue() != null)
+            return movie.getValue().getTitle();
+        else return "";
     }
 
     public String getMovieReleaseDate() {
-        return MathService.getYearFromDate(movie.getValue().getReleaseDate());
+        if (movie.getValue() != null)
+            return MathService.getYearFromDate(movie.getValue().getReleaseDate());
+        else return "";
     }
 
     public String getMovieUserRating() {
-        return movie.getValue().getVoteAverage() + "/10";
+        if (movie.getValue() != null) {
+            return movie.getValue().getVoteAverage() + "/10";
+        } else {
+            return "";
+        }
     }
 
     public String getMovieOverview() {
-        return movie.getValue().getOverview();
+        if (movie.getValue() != null)
+            return movie.getValue().getOverview();
+        else return "";
     }
 
     void setAdapterTrailers(VideoTrailerAdapter adapterTrailers) {
@@ -190,12 +198,15 @@ public class DetailsViewModel extends AndroidViewModel {
     }
 
     public interface VisibilityContract {
-        interface TrailersVisibility{
+        interface TrailersVisibility {
             void toVisible();
+
             void toGone();
         }
-        interface ReviewsVisibility{
+
+        interface ReviewsVisibility {
             void toVisible();
+
             void toGone();
         }
     }

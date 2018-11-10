@@ -8,19 +8,15 @@ public class Review {
     private String author;
     private String content;
     private String id;
-    private String url;
 
     public static final String AUTHOR_KEY = "author";
     public static final String CONTENT_KEY = "content";
     public static final String ID_KEY = "id";
-    public static final String URL_KEY = "url";
-
 
     public Review() {
         author = "";
         content = "";
         id = "";
-        url = "";
     }
 
     /**
@@ -50,11 +46,4 @@ public class Review {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }
