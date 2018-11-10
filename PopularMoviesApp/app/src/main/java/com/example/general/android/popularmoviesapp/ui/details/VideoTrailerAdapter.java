@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui.details.trailers;
+package com.example.general.android.popularmoviesapp.ui.details;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.VideoTrailer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class VideoTrailerAdapter extends RecyclerView.Adapter<VideoTrailerAdapter.VideoTrailerViewHolder> {
@@ -39,6 +40,12 @@ public class VideoTrailerAdapter extends RecyclerView.Adapter<VideoTrailerAdapte
     public void onBindViewHolder(@NonNull VideoTrailerViewHolder videoTrailerViewHolder, int i) {
         VideoTrailer trailerTarget = lstTrailers.get(i);
         videoTrailerViewHolder.bind(context, trailerTarget);
+    }
+
+    void updateTrailers(List<VideoTrailer> lstTrailers) {
+        this.lstTrailers.clear();
+        this.lstTrailers.addAll(lstTrailers);
+        notifyDataSetChanged();
     }
 
     @Override

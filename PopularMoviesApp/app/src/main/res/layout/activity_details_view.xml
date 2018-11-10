@@ -179,14 +179,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="32dp"
                     android:text="@string/trailers"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvTrailers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     tools:listitem="@layout/trailer_item" />
 
 
@@ -196,14 +196,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="32dp"
                     android:text="@string/reviews"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvReviews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     tools:listitem="@layout/review_item" />
 
 

@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui.details.reviews;
+package com.example.general.android.popularmoviesapp.ui.details;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Review;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
@@ -40,6 +41,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     @Override
     public int getItemCount() {
         return lstReviews.size();
+    }
+
+    public void updateReviews(List<Review> reviewList) {
+        this.lstReviews.clear();
+        this.lstReviews.addAll(reviewList);
+        notifyDataSetChanged();
     }
 
     class ReviewViewHolder extends RecyclerView.ViewHolder {

@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui.details.trailers;
+package com.example.general.android.popularmoviesapp.ui.details.tasks;
 
 import android.os.AsyncTask;
 

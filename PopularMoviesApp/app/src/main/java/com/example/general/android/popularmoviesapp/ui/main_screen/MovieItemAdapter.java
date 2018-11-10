@@ -9,13 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
 import com.example.general.android.popularmoviesapp.R;
 import com.example.general.android.popularmoviesapp.model.Movie;
 import com.example.general.android.popularmoviesapp.ui.details.DetailsMovieActivity;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
+
 import java.util.List;
 
-public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.MovieItemViewHolder>{
+public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.MovieItemViewHolder> {
 
     private List<Movie> lstMovies;
     private Context context;
@@ -44,7 +46,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.Movi
         return lstMovies.size();
     }
 
-    public void updateMovies(List<Movie> movies) {
+    void updateMovies(List<Movie> movies) {
         this.lstMovies.clear();
         this.lstMovies.addAll(movies);
         notifyDataSetChanged();

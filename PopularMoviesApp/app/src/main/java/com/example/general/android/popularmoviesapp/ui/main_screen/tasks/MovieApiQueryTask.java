@@ -1,4 +1,4 @@
-package com.example.general.android.popularmoviesapp.ui.main_screen;
+package com.example.general.android.popularmoviesapp.ui.main_screen.tasks;
 
 import android.os.AsyncTask;
 
@@ -14,13 +14,13 @@ import java.util.ArrayList;
  * Task used to get information from api, and update the screen that implements
  * the UpdateRecyclerView contract.
  */
-class MovieApiQueryTask extends AsyncTask<URL, Void, ArrayList<Movie>> {
+public class MovieApiQueryTask extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
     private UpdateRecyclerView contract;
     private QueryKind query;
     private String apiKey;
 
-    MovieApiQueryTask(UpdateRecyclerView acontract, QueryKind queryKind, String apiKey) {
+    public MovieApiQueryTask(UpdateRecyclerView acontract, QueryKind queryKind, String apiKey) {
         this.contract = acontract;
         this.query = queryKind;
         this.apiKey = apiKey;
@@ -62,9 +62,6 @@ class MovieApiQueryTask extends AsyncTask<URL, Void, ArrayList<Movie>> {
         return parameter;
     }
 
-    enum QueryKind {POPULAR_MOVIES, TOP_RATED_MOVIES}
+    public enum QueryKind {POPULAR_MOVIES, TOP_RATED_MOVIES}
 
-    interface UpdateRecyclerView {
-        void onUpdate(ArrayList<Movie> results);
-    }
 }
