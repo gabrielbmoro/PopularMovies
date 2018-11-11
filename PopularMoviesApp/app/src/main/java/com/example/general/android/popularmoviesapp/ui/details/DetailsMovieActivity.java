@@ -76,12 +76,38 @@ public class DetailsMovieActivity extends AppCompatActivity {
         viewModel.setAdapterReviews(reviewAdapter);
 
         setupButtonToFavoriteMovie();
+
+        loadViewModelElements();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+
+    private void setupButtonToFavoriteMovie() {
+        btnMarkAsFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.favoriteAction(btnMarkAsFavorite);
+            }
+        });
+    }
+
+    private void loadViewModelElements() {
         viewModel.loadReview(new DetailsViewModel.VisibilityContract.ReviewsVisibility() {
             @Override
             public void toVisible() {
@@ -112,24 +138,4 @@ public class DetailsMovieActivity extends AppCompatActivity {
         viewModel.updateTheFavoriteButton(btnMarkAsFavorite);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-
-    private void setupButtonToFavoriteMovie() {
-        btnMarkAsFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.favoriteAction(btnMarkAsFavorite);
-            }
-        });
-    }
 }
