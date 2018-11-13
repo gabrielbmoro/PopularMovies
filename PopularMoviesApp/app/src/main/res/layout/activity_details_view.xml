@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/tvReleaseDate"
-            style="@style/Base.TextAppearance.AppCompat.Title"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -51,7 +51,7 @@
             app:layout_constraintStart_toStartOf="@+id/gdVerticalLine"
             app:layout_constraintTop_toTopOf="@+id/ivPoster"
             app:layout_constraintVertical_chainStyle="spread_inside"
-            tools:text="2015" />
+            tools:text="2015-10-03" />
 
         <TextView
             android:id="@+id/tvTitle"

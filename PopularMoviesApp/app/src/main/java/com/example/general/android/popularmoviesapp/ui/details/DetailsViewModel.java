@@ -171,7 +171,7 @@ public class DetailsViewModel extends AndroidViewModel {
 
     public String getMovieReleaseDate() {
         if (movie.getValue() != null)
-            return MathService.getYearFromDate(movie.getValue().getReleaseDate());
+            return movie.getValue().getReleaseDate();
         else return "";
     }
 
