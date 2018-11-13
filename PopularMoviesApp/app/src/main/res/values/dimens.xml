@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="zero">0dp</dimen>
+    <dimen name="um">1dp</dimen>
+    <dimen name="dois">2dp</dimen>
+    <dimen name="marginBase">16dp</dimen>
+    <dimen name="marginBaseDiv2">8dp</dimen>
+    <dimen name="marginBaseDiv4">4dp</dimen>
+    <dimen name="defaultHeightToTextElements">45dp</dimen>
+    <dimen name="defaultHeightToTextViewElements">32dp</dimen>
+    <dimen name="minTextSize">10sp</dimen>
+    <dimen name="defaultTextSize">14sp</dimen>
+    <dimen name="widthImageViewDetail">54dp</dimen>
+</resources>
