@@ -74,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (currentSpinnerPosition == FAVORITE_MOVIES) {
+            viewModel.loadFavoriteMovies();
+        }
     }
 
     @Override
