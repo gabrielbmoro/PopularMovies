@@ -1,8 +1,10 @@
 package com.example.general.android.popularmoviesapp.ui.details;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +32,10 @@ public class DetailsMovieActivity extends AppCompatActivity {
     private RecyclerView rvReviews;
     private TextView tvReviewsLabel;
     private TextView tvTrailersLabel;
+    private TextView tvReleaseDate;
+    private TextView tvTitle;
+    private TextView tvUserRating;
+    private TextView tvOverview;
     private Button btnMarkAsFavorite;
 
     private DetailsViewModel viewModel;
@@ -38,6 +44,7 @@ public class DetailsMovieActivity extends AppCompatActivity {
      * Key used to transfer movie from Main Screen to this screen.
      */
     public static final String MOVIE_INTENT_KEY = "MOVIE_TARGET";
+
     /**
      * Image size used to load the image using picasso.
      */
@@ -53,14 +60,32 @@ public class DetailsMovieActivity extends AppCompatActivity {
         btnMarkAsFavorite = findViewById(R.id.btnMarkAsFavorite);
         tvReviewsLabel = findViewById(R.id.tvReviewsLabel);
         tvTrailersLabel = findViewById(R.id.tvTrailersLabel);
+        tvReleaseDate = findViewById(R.id.tvReleaseDate);
+        tvTitle = findViewById(R.id.tvTitle);
+        tvUserRating = findViewById(R.id.tvUserRating);
+        tvOverview = findViewById(R.id.tvOverview);
 
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
 
-        Parcelable objectViaIntent = getIntent().getParcelableExtra(MOVIE_INTENT_KEY);
+        if(!getIntent().hasExtra(MOVIE_INTENT_KEY)) finish();
 
+        Parcelable objectViaIntent = getIntent().getParcelableExtra(MOVIE_INTENT_KEY);
         if (!(objectViaIntent instanceof Movie)) finish();
 
-        viewModel.setMovie((Movie) objectViaIntent);
+        final Movie movieTarget = (Movie) objectViaIntent;
+
+        viewModel.initLiveData(movieTarget, this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie target) {
+                if (target != null) {
+                    if (target.isFavorite()) {
+                        btnMarkAsFavorite.setText(R.string.markOffFavorite);
+                    } else {
+                        btnMarkAsFavorite.setText(R.string.markAsFavorite);
+                    }
+                }
+            }
+        });
         binding.setViewModel(viewModel);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -75,10 +100,19 @@ public class DetailsMovieActivity extends AppCompatActivity {
         rvReviews.setAdapter(reviewAdapter);
         viewModel.setAdapterReviews(reviewAdapter);
 
-        setupButtonToFavoriteMovie();
-
+        loadInitialInformation(movieTarget);
         loadViewModelElements();
+        setupButtonToFavoriteMovie();
+    }
 
+    private void loadInitialInformation(Movie objectViaIntent) {
+        if (objectViaIntent == null) return;
+
+        tvReleaseDate.setText(objectViaIntent.getReleaseDate());
+        String userRatingValue = objectViaIntent.getVoteAverage() + "/10";
+        tvUserRating.setText(userRatingValue);
+        tvTitle.setText(objectViaIntent.getTitle());
+        tvOverview.setText(objectViaIntent.getOverview());
     }
 
     @Override
@@ -102,7 +136,7 @@ public class DetailsMovieActivity extends AppCompatActivity {
         btnMarkAsFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.favoriteAction(btnMarkAsFavorite);
+                viewModel.favoriteAction();
             }
         });
     }

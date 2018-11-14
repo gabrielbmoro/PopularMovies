@@ -2,8 +2,11 @@ package com.example.general.android.popularmoviesapp.ui.details;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -15,7 +18,6 @@ import com.example.general.android.popularmoviesapp.model.database.AppDatabase;
 import com.example.general.android.popularmoviesapp.ui.details.tasks.ReviewsApiQueryTask;
 import com.example.general.android.popularmoviesapp.ui.details.tasks.TrailerApiQueryTask;
 import com.example.general.android.popularmoviesapp.util.AppExecutors;
-import com.example.general.android.popularmoviesapp.util.MathService;
 import com.example.general.android.popularmoviesapp.util.NetworkUtils;
 import com.example.general.android.popularmoviesapp.util.PicassoLoader;
 
@@ -23,9 +25,13 @@ import java.util.ArrayList;
 
 public class DetailsViewModel extends AndroidViewModel {
 
-    private MutableLiveData<Movie> movie = new MutableLiveData<>();
     private MutableLiveData<ArrayList<VideoTrailer>> trailerLst = new MutableLiveData<>();
     private MutableLiveData<ArrayList<Review>> reviewsLst = new MutableLiveData<>();
+
+    private LiveData<Movie> movie;
+    private Long nMovieId;
+    private String posterPath;
+
     private VideoTrailerAdapter adapterTrailers;
     private ReviewAdapter adapterReviews;
 
@@ -37,14 +43,25 @@ public class DetailsViewModel extends AndroidViewModel {
         this.apiKey = application.getResources().getString(R.string.api_key);
     }
 
-    public void setMovie(@NonNull Movie movieTarget) {
-        movie.setValue(movieTarget);
+    void initLiveData(final @NonNull Movie movieTarget, final AppCompatActivity activity, final Observer<Movie> contract) {
+        nMovieId = movieTarget.getId();
+        posterPath = movieTarget.getPosterPath();
+        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if(AppDatabase.getInstance(getApplication()).movieDao().getMovieAccordingToId(nMovieId)==null) {
+                    AppDatabase.getInstance(getApplication()).movieDao().saveMovie(movieTarget);
+                }
+                movie = AppDatabase.getInstance(getApplication()).movieDao().getLiveDataToFavoriteMovieAccordingId(movieTarget.getId());
+                movie.observe(activity, contract);
+            }
+        });
     }
 
     void loadReview(final VisibilityContract.ReviewsVisibility contract) {
         if (reviewsLst.getValue() == null || (reviewsLst.getValue() != null && reviewsLst.getValue().isEmpty())) {
-            if (NetworkUtils.hasInternetConnection(getApplication()) && movie.getValue() != null) {
-                new ReviewsApiQueryTask(apiKey, movie.getValue().getId(), new ReviewsApiQueryTask.UpdateRecyclerView() {
+            if (NetworkUtils.hasInternetConnection(getApplication())) {
+                new ReviewsApiQueryTask(apiKey, nMovieId, new ReviewsApiQueryTask.UpdateRecyclerView() {
                     @Override
                     public void onUpdate(ArrayList<Review> results) {
                         reviewsLst.setValue(results);
@@ -67,18 +84,15 @@ public class DetailsViewModel extends AndroidViewModel {
     void loadTrailers(final VisibilityContract.TrailersVisibility contract) {
         if (trailerLst.getValue() == null || (trailerLst.getValue() != null && trailerLst.getValue().isEmpty())) {
             if (NetworkUtils.hasInternetConnection(getApplication())) {
-                if (movie.getValue() != null) {
-                    new TrailerApiQueryTask(apiKey, movie.getValue().getId(), new TrailerApiQueryTask.UpdateRecyclerView() {
-                        @Override
-                        public void onUpdate(ArrayList<VideoTrailer> results) {
-                            trailerLst.setValue(results);
-                            adapterTrailers.updateTrailers(results);
-                            if (adapterTrailers.getItemCount() > 0) contract.toVisible();
-                            else contract.toGone();
-                        }
-                    }).execute();
-                }
-
+                new TrailerApiQueryTask(apiKey, nMovieId, new TrailerApiQueryTask.UpdateRecyclerView() {
+                    @Override
+                    public void onUpdate(ArrayList<VideoTrailer> results) {
+                        trailerLst.setValue(results);
+                        adapterTrailers.updateTrailers(results);
+                        if (adapterTrailers.getItemCount() > 0) contract.toVisible();
+                        else contract.toGone();
+                    }
+                }).execute();
             }
         } else {
             adapterTrailers.updateTrailers(trailerLst.getValue());
@@ -93,8 +107,7 @@ public class DetailsViewModel extends AndroidViewModel {
     void loadImagePoster(ImageView imageView) {
         final String imageSize = "w342";
         if (NetworkUtils.hasInternetConnection(getApplication())) {
-            if (movie.getValue() != null)
-                PicassoLoader.loadImageFromURL(getApplication(), imageSize, movie.getValue().getPosterPath().replaceAll("/", ""), imageView);
+            PicassoLoader.loadImageFromURL(getApplication(), imageSize, posterPath.replaceAll("/", ""), imageView);
         } else {
             imageView.setImageResource(R.drawable.no_connection);
         }
@@ -118,75 +131,26 @@ public class DetailsViewModel extends AndroidViewModel {
         });
     }
 
-    void favoriteAction(final Button favoriteButton) {
+    void favoriteAction() {
         AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
             @Override
             public void run() {
                 if (movie.getValue() != null) {
-                    if (movie.getValue().isFavorite()) {
-                        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                AppDatabase.getInstance(getApplication()).movieDao().deleteMovie(movie.getValue());
-                                movie.getValue().setFavorite(false);
-                                AppExecutors.getInstance().getMainThread().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        favoriteButton.setText(R.string.markAsFavorite);
-                                    }
-                                });
-
-                            }
-                        });
-                    } else {
-                        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                movie.getValue().setFavorite(true);
-                                AppDatabase.getInstance(getApplication()).movieDao().insertMovie(movie.getValue());
-                                AppExecutors.getInstance().getMainThread().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        favoriteButton.setText(R.string.markOffFavorite);
-                                    }
-                                });
-                            }
-                        });
-                    }
+                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            movie.getValue().setFavorite(!movie.getValue().isFavorite());
+                            AppDatabase.getInstance(getApplication()).movieDao().saveMovie(movie.getValue());
+                        }
+                    });
                 }
             }
         });
     }
 
 
-    public MutableLiveData<Movie> getMovie() {
+    public LiveData<Movie> getMovie() {
         return movie;
-    }
-
-    public String getMovieTitle() {
-        if (movie.getValue() != null)
-            return movie.getValue().getTitle();
-        else return "";
-    }
-
-    public String getMovieReleaseDate() {
-        if (movie.getValue() != null)
-            return movie.getValue().getReleaseDate();
-        else return "";
-    }
-
-    public String getMovieUserRating() {
-        if (movie.getValue() != null) {
-            return movie.getValue().getVoteAverage() + "/10";
-        } else {
-            return "";
-        }
-    }
-
-    public String getMovieOverview() {
-        if (movie.getValue() != null)
-            return movie.getValue().getOverview();
-        else return "";
     }
 
     void setAdapterTrailers(VideoTrailerAdapter adapterTrailers) {
