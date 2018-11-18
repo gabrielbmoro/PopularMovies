@@ -1,6 +1,7 @@
 package com.example.general.android.popularmoviesapp.util;
 
 import android.content.Context;
+import android.net.Uri;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -11,10 +12,17 @@ import com.squareup.picasso.Picasso;
  */
 public class PicassoLoader {
 
-    private static final String BASE_URL = "http://image.tmdb.org/t/p";
+    private static final String BASE_URL = "http://image.tmdb.org";
 
     public static void loadImageFromURL(Context context, String size, String fileName, ImageView ivReference) {
-        String url = BASE_URL + "/" + size + "/" + fileName;
+        String url = Uri.parse(BASE_URL)
+                .buildUpon()
+                .appendPath("t")
+                .appendPath("p")
+                .appendPath(size)
+                .appendPath(fileName)
+                .build()
+                .toString();
         Picasso.with(context).load(url).into(ivReference);
     }
 }
