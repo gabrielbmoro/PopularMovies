@@ -20,14 +20,20 @@ import com.example.general.android.popularmoviesapp.model.Movie;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Main screen
  */
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected RecyclerView rcRecyclerView;
-    protected Spinner spCriteria;
-    protected SwipeRefreshLayout srlMovies;
+    @BindView(R.id.rvMovies)
+    RecyclerView rcRecyclerView;
+    @BindView(R.id.spCriteria)
+    Spinner spCriteria;
+    @BindView(R.id.srlMovies)
+    SwipeRefreshLayout srlMovies;
     private MainViewModel viewModel;
     private static final int POPULAR_MOVIES = 0;
     private static final int TOP_RATED_MOVIES = 1;
@@ -39,13 +45,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
 
         ActivityMainDiscoveryScreenBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main_discovery_screen);
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         binding.setViewModel(viewModel);
 
-        rcRecyclerView = findViewById(R.id.rvMovies);
-        spCriteria = findViewById(R.id.spCriteria);
-        srlMovies = findViewById(R.id.srlMovies);
-
-        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        ButterKnife.bind(this);
 
         setupRecyclerView();
 

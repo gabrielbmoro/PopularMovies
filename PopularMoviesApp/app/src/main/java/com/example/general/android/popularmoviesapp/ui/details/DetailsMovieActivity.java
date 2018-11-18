@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,21 +21,35 @@ import com.example.general.android.popularmoviesapp.model.VideoTrailer;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * This screen show to the user the detail about movie.
  */
 public class DetailsMovieActivity extends AppCompatActivity {
 
-    private ImageView ivPoster;
-    private RecyclerView rvTrailers;
-    private RecyclerView rvReviews;
-    private TextView tvReviewsLabel;
-    private TextView tvTrailersLabel;
-    private TextView tvReleaseDate;
-    private TextView tvTitle;
-    private TextView tvUserRating;
-    private TextView tvOverview;
-    private Button btnMarkAsFavorite;
+    @BindView(R.id.ivPoster)
+    ImageView ivPoster;
+    @BindView(R.id.rvTrailers)
+    RecyclerView rvTrailers;
+    @BindView(R.id.rvReviews)
+    RecyclerView rvReviews;
+    @BindView(R.id.tvReviewsLabel)
+    TextView tvReviewsLabel;
+    @BindView(R.id.tvTrailersLabel)
+    TextView tvTrailersLabel;
+    @BindView(R.id.tvReleaseDate)
+    TextView tvReleaseDate;
+    @BindView(R.id.tvTitle)
+    TextView tvTitle;
+    @BindView(R.id.tvUserRating)
+    TextView tvUserRating;
+    @BindView(R.id.tvOverview)
+    TextView tvOverview;
+    @BindView(R.id.btnMarkAsFavorite)
+    Button btnMarkAsFavorite;
 
     private DetailsViewModel viewModel;
 
@@ -52,22 +65,14 @@ public class DetailsMovieActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ActivityDetailsViewBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_details_view);
-
-        ivPoster = findViewById(R.id.ivPoster);
-        rvTrailers = findViewById(R.id.rvTrailers);
-        rvReviews = findViewById(R.id.rvReviews);
-        btnMarkAsFavorite = findViewById(R.id.btnMarkAsFavorite);
-        tvReviewsLabel = findViewById(R.id.tvReviewsLabel);
-        tvTrailersLabel = findViewById(R.id.tvTrailersLabel);
-        tvReleaseDate = findViewById(R.id.tvReleaseDate);
-        tvTitle = findViewById(R.id.tvTitle);
-        tvUserRating = findViewById(R.id.tvUserRating);
-        tvOverview = findViewById(R.id.tvOverview);
-
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
+        binding.setViewModel(viewModel);
 
-        if(!getIntent().hasExtra(MOVIE_INTENT_KEY)) finish();
+        ButterKnife.bind(this);
+
+        if (!getIntent().hasExtra(MOVIE_INTENT_KEY)) finish();
 
         Parcelable objectViaIntent = getIntent().getParcelableExtra(MOVIE_INTENT_KEY);
         if (!(objectViaIntent instanceof Movie)) finish();
@@ -86,7 +91,6 @@ public class DetailsMovieActivity extends AppCompatActivity {
                 }
             }
         });
-        binding.setViewModel(viewModel);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvTrailers.setLayoutManager(llm);
@@ -102,7 +106,6 @@ public class DetailsMovieActivity extends AppCompatActivity {
 
         loadInitialInformation(movieTarget);
         loadViewModelElements();
-        setupButtonToFavoriteMovie();
     }
 
     private void loadInitialInformation(Movie objectViaIntent) {
@@ -131,15 +134,8 @@ public class DetailsMovieActivity extends AppCompatActivity {
         super.onStop();
     }
 
-
-    private void setupButtonToFavoriteMovie() {
-        btnMarkAsFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.favoriteAction();
-            }
-        });
-    }
+    @OnClick(R.id.btnMarkAsFavorite)
+    void onFavoriteEvent() { viewModel.favoriteAction(); }
 
     private void loadViewModelElements() {
         viewModel.loadReview(new DetailsViewModel.VisibilityContract.ReviewsVisibility() {
