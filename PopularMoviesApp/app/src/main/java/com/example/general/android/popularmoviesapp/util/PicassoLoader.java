@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.example.general.android.popularmoviesapp.R;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -23,6 +24,11 @@ public class PicassoLoader {
                 .appendPath(fileName)
                 .build()
                 .toString();
-        Picasso.with(context).load(url).into(ivReference);
+
+        Picasso.with(context)
+                .load(url)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholdererror)
+                .into(ivReference);
     }
 }
