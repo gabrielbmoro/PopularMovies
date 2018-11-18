@@ -35,4 +35,4 @@ The project was created using three layers:
     * ui - Define the user interface behavior, screens, and others visual things;
     * util - Provide services for all objects.
 
-If you want to see the version has with functionalities, click [here](https://github.com/tido4410/popularmovies_udacitycourse/releases/tag/stage2v1.0.1)
+If you want to see the version has with functionalities, click [here](https://github.com/tido4410/popularmovies_udacitycourse/releases/tag/stage2v1.0.2)
